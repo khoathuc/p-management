@@ -7,10 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum OrganizationRole {
+enum WorkspaceRole {
   Member
   Owner
   Admin
+}
+
+enum UserStatus {
+  Active
+  Deactivated
 }
 
 model User {
@@ -19,14 +24,14 @@ model User {
   username String @unique
   email    String @unique
 
-  password String?
+  password String
   status   Int
 
-  firstName             String?
-  lastName              String?
-  avatar                String?
-  currentOrganizationId String?
-  emailVerified         Boolean @default(false)
+  firstName          String?
+  lastName           String?
+  avatar             String?
+  currentWorkspaceId String?
+  emailVerified      Boolean @default(false)
 
   //data
   data Json?
@@ -36,7 +41,7 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
-model Organization {
+model Workspace {
   id     String  @id @default(cuid())
   userId String
   name   String  @unique
@@ -54,9 +59,9 @@ model Organization {
   updatedAt DateTime @updatedAt
 }
 
-model OrganizationFollowing {
-  id   String           @id @default(cuid())
-  role OrganizationRole @default(Member)
+model WorkspaceFollowing {
+  id   String        @id @default(cuid())
+  role WorkspaceRole @default(Member)
 
   objectId String
   userId   String
@@ -83,11 +88,11 @@ model Invitation {
   id String @id @default(cuid())
 
   userId         String
-  organizationId String
+  workspaceId String
 
-  role           OrganizationRole @default(Member)
+  role           WorkspaceRole @default(Member)
   email          String
-  inviteAccepted Boolean?         @default(false)
+  inviteAccepted Boolean?      @default(false)
   token          String?
 
   //data
@@ -97,7 +102,7 @@ model Invitation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([organizationId])
+  @@index([workspaceId])
 }
 
 model VerifyToken {
