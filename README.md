@@ -24,3 +24,13 @@
             pnpm start:dev
         ```
     to start application
+
+- init schema and connect to database
+    - Install postgre, install pgAdmin, 
+    - Tạo db tương ứng. 
+    - sửa file .env 
+
+    cd to server/prisma.
+    ```
+        pnpx prisma generate
+    ```
