@@ -4,8 +4,9 @@ import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { APP_PIPE } from '@nestjs/core';
+import { WorkspaceModule } from './workspace/workspace.module';
 @Module({
-  imports: [AuthModule, PrismaModule],
+  imports: [AuthModule, PrismaModule, WorkspaceModule],
   controllers: [AppController],
   providers: [
     AppService,
