@@ -1,10 +1,10 @@
-import { Body, Controller, Get, Param, Post, Patch, Delete } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Delete, Put } from '@nestjs/common';
 import { WorkspacesService } from './workspaces.service';
 import { CreateWorkspaceDto } from './dto/create.workspace.dto';
 import { UpdateWorkspaceDto } from './dto/update.workspace.dto';
 
 
-@Controller('workspace')
+@Controller('workspaces')
 export class WorkspaceController {
   constructor(private readonly workspacesService: WorkspacesService) {}
 
@@ -23,7 +23,7 @@ export class WorkspaceController {
     return this.workspacesService.getById(id)
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateWorkspaceDto: UpdateWorkspaceDto) {
     return this.workspacesService.update(id, updateWorkspaceDto)
   }
