@@ -1,36 +1,35 @@
 import { Body, Controller, Get, Param, Post, UsePipes, ValidationPipe, Patch, Delete } from '@nestjs/common';
-import { WorkspaceService } from './workspace.service';
+import { WorkspacesService } from './workspaces.service';
 import { CreateWorkspaceDto } from './dto/create-workspace.dto';
 import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
 
 
 @Controller('workspace')
 export class WorkspaceController {
-  constructor(private readonly workspaceService: WorkspaceService) {}
+  constructor(private readonly workspacesService: WorkspacesService) {}
 
   @Post()
-  @UsePipes(ValidationPipe)
-  createWorkspace(@Body() createWorkspaceData : CreateWorkspaceDto) {
-    return this.workspaceService.createWorkspace(createWorkspaceData)
+  createWorkspace(@Body() createWorkspaceDto : CreateWorkspaceDto) {
+    return this.workspacesService.createWorkspace(createWorkspaceDto)
   }
 
   @Get()
   getWorkspace() {
-    return this.workspaceService.getWorkspace()
+    return this.workspacesService.getWorkspace()
   }
 
   @Get(':id')
   getWorkspaceById(@Param('id') id: string) {
-    return this.workspaceService.getWorkspaceById(id)
+    return this.workspacesService.getWorkspaceById(id)
   }
 
   @Patch(':id')
   updateWorkspace(@Param('id') id: string, @Body() updateWorkspaceDto: UpdateWorkspaceDto) {
-    return this.workspaceService.updateWorkspace(id, updateWorkspaceDto)
+    return this.workspacesService.updateWorkspace(id, updateWorkspaceDto)
   }
 
   @Delete()
   deleteWorkspace(@Param('id') id: string) {
-    return this.workspaceService.deleteWorkspace(id)
+    return this.workspacesService.deleteWorkspace(id)
   }
 }

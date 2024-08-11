@@ -1,19 +1,15 @@
-import { Module, ValidationPipe } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { PrismaModule } from './prisma/prisma.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { APP_PIPE } from '@nestjs/core';
-import { WorkspaceModule } from './workspace/workspace.module';
+import { Module, ValidationPipe } from "@nestjs/common";
+import { PrismaModule } from "@db/prisma.module";
+import { AuthModule } from "@modules/auth/auth.module";
+import { WorkspaceModule } from "@modules/workspaces/workspaces.module";
+import { APP_PIPE } from "@nestjs/core";
 @Module({
-  imports: [AuthModule, PrismaModule, WorkspaceModule],
-  controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_PIPE,
-      useClass: ValidationPipe
-    }
-  ],
+    imports: [AuthModule, PrismaModule, WorkspaceModule],
+    providers: [
+        {
+            provide: APP_PIPE,
+            useClass: ValidationPipe,
+        },
+    ],
 })
-export class AppModule { }
+export class AppModule {}
