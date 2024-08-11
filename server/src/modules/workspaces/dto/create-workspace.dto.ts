@@ -3,10 +3,6 @@ import { IsArray, IsNotEmpty, IsOptional, IsString } from "class-validator"
 export class CreateWorkspaceDto {
     @IsString()
     @IsNotEmpty()
-    id: string
-
-    @IsString()
-    @IsNotEmpty()
     userId: string
 
     @IsNotEmpty()
