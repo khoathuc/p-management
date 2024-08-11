@@ -25,6 +25,7 @@ export class WorkspacesService {
         });
     }
 
+
     async getAll() {
         const Workspace = await this.prisma.workspace.findMany();
         if (!Workspace.length)

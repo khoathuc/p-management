@@ -13,6 +13,7 @@
     "paths": {
       "@modules/*": ["./src/modules/*"],
       "@db/*": ["./src/db/*"],
+      "@common/*": ["./src/common/*"],
     },
     "incremental": true,
     "skipLibCheck": true,

@@ -1,35 +1,72 @@
-import { Body, Controller, Get, Param, Post, Delete, Put, Patch } from '@nestjs/common';
-import { WorkspacesService } from './workspaces.service';
-import { CreateWorkspaceDto } from './dto/create.workspace.dto';
-import { UpdateWorkspaceDto } from './dto/update.workspace.dto';
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    Post,
+    Delete,
+    Patch,
+} from "@nestjs/common";
+import { WorkspacesService } from "./workspaces.service";
+import { CreateWorkspaceDto } from "./dto/create.workspace.dto";
+import { UpdateWorkspaceDto } from "./dto/update.workspace.dto";
+import { ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
 
-
-@Controller('workspaces')
+@Controller("workspaces")
+@ApiTags("workspaces")
 export class WorkspaceController {
-  constructor(private readonly workspacesService: WorkspacesService) {}
+    constructor(private readonly workspacesService: WorkspacesService) {}
 
-  @Post()
-  create(@Body() createWorkspaceDto : CreateWorkspaceDto) {
-    return this.workspacesService.create(createWorkspaceDto)
-  }
+    @Post()
+    @ApiOperation({
+        summary: "Create new workspace",
+        description: "Create new workspace",
+    })
+    create(@Body() createWorkspaceDto: CreateWorkspaceDto) {
+        return this.workspacesService.create(createWorkspaceDto);
+    }
 
-  @Get()
-  getAll() {
-    return this.workspacesService.getAll()
-  }
+    @Get()
+    @ApiOperation({
+        summary: "Get all workspaces",
+        description: "Get all workspaces",
+    })
+    getAll() {
+        return this.workspacesService.getAll();
+    }
 
-  @Get(':id')
-  getById(@Param('id') id: string) {
-    return this.workspacesService.getById(id)
-  }
+    @Get(":id")
+    @ApiOperation({
+        summary: "Get workspace by id",
+        description: "Get workspace by id",
+    })
+    @ApiParam({
+      name: "id",
+      type: "string",
+      
+    })
+    getById(@Param("id") id: string) {
+        return this.workspacesService.getById(id);
+    }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWorkspaceDto: UpdateWorkspaceDto) {
-    return this.workspacesService.update(id, updateWorkspaceDto)
-  }
+    @Patch(":id")
+    @ApiOperation({
+        summary: "Update a workspace by id",
+        description: "Update a workspace by id",
+    })
+    update(
+        @Param("id") id: string,
+        @Body() updateWorkspaceDto: UpdateWorkspaceDto
+    ) {
+        return this.workspacesService.update(id, updateWorkspaceDto);
+    }
 
-  @Delete()
-  delete(@Param('id') id: string) {
-    return this.workspacesService.delete(id)
-  }
+    @Delete()
+    @ApiOperation({
+        summary: "Delete a workspace",
+        description: "Delete a workspace by id",
+    })
+    delete(@Param("id") id: string) {
+        return this.workspacesService.delete(id);
+    }
 }
