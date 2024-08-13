@@ -3,10 +3,10 @@ import { PrismaService } from "@db/prisma.service";
 import { Prisma } from "@prisma/client";
 import { CreateWorkspaceDto } from "./dto/create.workspace.dto";
 import { Workspace as WorkspaceModel } from "@prisma/client";
+import { BaseDBService } from "@providers/basedb/basedb.service";
 
 @Injectable()
-export class WorkspacesService {
-    constructor(private prisma: PrismaService) {}
+export class WorkspacesService extends BaseDBService {
 
     async create(data: CreateWorkspaceDto): Promise<WorkspaceModel> {
         if (data.name) {
@@ -26,10 +26,7 @@ export class WorkspacesService {
     }
 
     async getAll() {
-        const Workspace = await this.prisma.workspace.findMany();
-        if (!Workspace.length)
-            throw new HttpException("Workspace Not Found", 404);
-        return Workspace;
+        return await this.prisma.workspace.findMany();
     }
 
     async getById(id: string) {
