@@ -9,6 +9,7 @@ import {
     UnauthorizedException,
     HttpException,
     HttpStatus,
+    BadRequestException,
 } from "@nestjs/common";
 import { HttpMessage } from "@common/constants/http.message";
 import { WorkspacesService } from "./workspaces.service";
@@ -16,16 +17,12 @@ import { CreateWorkspaceDto } from "./dto/create.workspace.dto";
 import { UpdateWorkspaceDto } from "./dto/update.workspace.dto";
 import { ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
 import { UsersService } from "@modules/users/users.service";
-import { WorkspacesLoader } from "./services/workspaces.loader";
-import { WorkspacesReader } from "./services/workspaces.reader";
 
 @Controller("workspaces")
 @ApiTags("workspaces")
 export class WorkspaceController {
     constructor(
         private readonly workspacesService: WorkspacesService,
-        private readonly workspacesLoader: WorkspacesLoader,
-        private readonly workspacesReader: WorkspacesReader,
         private readonly usersService: UsersService
     ) {}
 
@@ -36,27 +33,32 @@ export class WorkspaceController {
     })
     async create(@Body() createWorkspaceDto: CreateWorkspaceDto) {
         try {
-            const {userId} = createWorkspaceDto;
-    
+            const { userId } = createWorkspaceDto;
+
             //validate user
             //check if user is authenticated.
             //TODO: replace validate user by current user
             const user = await this.usersService.getById(userId);
-            if(!user){
+            if (!user) {
                 throw new UnauthorizedException(HttpMessage.INVALID_DATA);
             }
-    
+
             //create new workspace
-            const workspace = await this.workspacesReader.create(createWorkspaceDto);
-    
+            const workspace = await this.workspacesService
+                .reader()
+                .create(createWorkspaceDto);
+
             //on created workspace
             // this.workspacesService.on(workspace).created();
-    
+
             //return workspace
             // return workspace;
-            return true;
+            return workspace;
         } catch (error) {
-            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);            
+            throw new HttpException(
+                error.message,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 
@@ -66,7 +68,14 @@ export class WorkspaceController {
         description: "Get all workspaces",
     })
     async getAll() {
-        return await this.workspacesLoader.getAll();
+        try {
+            return await this.workspacesService.loader().getAll();
+        } catch (error) {
+            throw new HttpException(
+                error.message,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     @Get(":id")
@@ -75,11 +84,18 @@ export class WorkspaceController {
         description: "Get workspace by id",
     })
     @ApiParam({
-      name: "id",
-      type: "string",
+        name: "id",
+        type: "string",
     })
-    getById(@Param("id") id: string) {
-        return this.workspacesLoader.getById(id);
+    async getById(@Param("id") id: string) {
+        try {
+            return await this.workspacesService.loader().getById(id);
+        } catch (error) {
+            throw new HttpException(
+                error.message,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     @Patch(":id")
@@ -87,11 +103,30 @@ export class WorkspaceController {
         summary: "Update a workspace by id",
         description: "Update a workspace by id",
     })
-    update(
+    async update(
         @Param("id") id: string,
         @Body() updateWorkspaceDto: UpdateWorkspaceDto
     ) {
-        return this.workspacesService.update(id, updateWorkspaceDto);
+        try {
+            const isWorkspaceExisted = await this.workspacesService
+                .loader()
+                .getById(id);
+            if (!isWorkspaceExisted) {
+                throw new BadRequestException(HttpMessage.INVALID_DATA);
+            }
+
+            //update workspace
+            const workspace = await this.workspacesService
+                .reader()
+                .update(id, updateWorkspaceDto);
+
+            return workspace;
+        } catch (error) {
+            throw new HttpException(
+                error.message,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     @Delete()
@@ -99,7 +134,21 @@ export class WorkspaceController {
         summary: "Delete a workspace",
         description: "Delete a workspace by id",
     })
-    delete(@Param("id") id: string) {
-        return this.workspacesService.delete(id);
+    async delete(@Param("id") id: string) {
+        try {
+            const isWorkspaceExisted = await this.workspacesService
+                .loader()
+                .getById(id);
+            if (!isWorkspaceExisted) {
+                throw new BadRequestException(HttpMessage.INVALID_DATA);
+            }
+
+            return await this.workspacesService.delete(id);
+        } catch (error) {
+            throw new HttpException(
+                error.message,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }
