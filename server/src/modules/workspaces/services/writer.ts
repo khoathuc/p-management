@@ -1,11 +1,9 @@
-import { Injectable } from "@nestjs/common";
 import { Workspace } from "@prisma/client";
 import { CreateWorkspaceDto } from "../dto/create.workspace.dto";
-import { WorkspacesLoader } from "./workspaces.loader";
 import { PrismaService } from "@db/prisma.service";
 import { UpdateWorkspaceDto } from "../dto/update.workspace.dto";
 
-export class WorkspacesReader {
+export class WorkspacesWriter {
     constructor(
         private _prisma: PrismaService,
     ) {

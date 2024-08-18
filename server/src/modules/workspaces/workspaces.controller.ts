@@ -22,8 +22,8 @@ import { UsersService } from "@modules/users/users.service";
 @ApiTags("workspaces")
 export class WorkspaceController {
     constructor(
-        private readonly workspacesService: WorkspacesService,
-        private readonly usersService: UsersService
+        readonly workspacesService: WorkspacesService,
+        readonly usersService: UsersService
     ) {}
 
     @Post()
@@ -35,7 +35,6 @@ export class WorkspaceController {
         try {
             const { userId } = createWorkspaceDto;
 
-            //validate user
             //check if user is authenticated.
             //TODO: replace validate user by current user
             const user = await this.usersService.getById(userId);
@@ -45,14 +44,12 @@ export class WorkspaceController {
 
             //create new workspace
             const workspace = await this.workspacesService
-                .reader()
+                .writer()
                 .create(createWorkspaceDto);
 
             //on created workspace
-            // this.workspacesService.on(workspace).created();
+            await this.workspacesService.fs().init(workspace);
 
-            //return workspace
-            // return workspace;
             return workspace;
         } catch (error) {
             throw new HttpException(
@@ -117,8 +114,11 @@ export class WorkspaceController {
 
             //update workspace
             const workspace = await this.workspacesService
-                .reader()
+                .writer()
                 .update(id, updateWorkspaceDto);
+
+            //on update workspace
+            await this.workspacesService.fs().init(workspace);
 
             return workspace;
         } catch (error) {
@@ -129,21 +129,26 @@ export class WorkspaceController {
         }
     }
 
-    @Delete()
+    @Delete(":id")
     @ApiOperation({
         summary: "Delete a workspace",
         description: "Delete a workspace by id",
     })
     async delete(@Param("id") id: string) {
         try {
-            const isWorkspaceExisted = await this.workspacesService
-                .loader()
-                .getById(id);
-            if (!isWorkspaceExisted) {
+            const workspace = await this.workspacesService.loader().getById(id);
+
+            if (!workspace) {
                 throw new BadRequestException(HttpMessage.INVALID_DATA);
             }
 
-            return await this.workspacesService.delete(id);
+            // Delete workspace
+            await this.workspacesService.delete(workspace);
+
+            // on remove workspace
+            await this.workspacesService.fs().remove(workspace);
+
+            return workspace;
         } catch (error) {
             throw new HttpException(
                 error.message,
