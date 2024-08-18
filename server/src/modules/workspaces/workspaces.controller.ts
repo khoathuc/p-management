@@ -8,11 +8,14 @@ import {
     Patch,
     HttpStatus,
     HttpCode,
+    UseInterceptors, 
+    UploadedFile
 } from "@nestjs/common";
 import { WorkspacesService } from "./workspaces.service";
 import { CreateWorkspaceDto } from "./dto/create.workspace.dto";
 import { UpdateWorkspaceDto } from "./dto/update.workspace.dto";
 import { ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
+
 
 @Controller("workspaces")
 @ApiTags("workspaces")

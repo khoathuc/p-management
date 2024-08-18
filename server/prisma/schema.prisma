@@ -32,6 +32,8 @@ model User {
   avatar             String?
   currentWorkspaceId String?
   emailVerified      Boolean @default(false)
+  title              String?
+  location           String?
 
   //data
   data Json?
@@ -89,7 +91,7 @@ model WorkspaceFollowing {
 model Invitation {
   id String @id @default(cuid())
 
-  userId         String
+  userId      String
   workspaceId String
 
   role           WorkspaceRole @default(Member)
@@ -126,7 +128,6 @@ model VerifyToken {
 
   //index
   @@unique([identifier, token])
-
   @@index([workspaceId])
   @@index([workspaceId, identifier, token])
 }
