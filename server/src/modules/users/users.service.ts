@@ -28,11 +28,11 @@ export class UsersService {
      */
 	async updateSettings(id: string, data: UpdateSettingsDto): Promise<User> {
 		const { username, email, currentPassword, confirmPassword, 
-				newPassword, title, location, status } = data
+				newPassword, title, location, currentStatus } = data
 		const updateData: any = {};
 
-		if(status) {
-			updateData.status = status;
+		if(currentStatus) {
+			updateData.currentStatus = currentStatus;
 		}
 
 		if(title) {

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, MinLength } from "class-validator"
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from "class-validator"
 
 export class UpdateSettingsDto {
     @IsOptional()
@@ -42,10 +42,9 @@ export class UpdateSettingsDto {
     @ApiProperty()
     location: string;
 
-    @IsNumber()
     @IsOptional()
     @IsNotEmpty()
     @ApiProperty()
-    status: number;
+    currentStatus: string;
     
 }
