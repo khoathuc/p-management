@@ -34,6 +34,7 @@ model User {
   emailVerified      Boolean @default(false)
   title              String?
   location           String?
+  currentStatus      String?
 
   //data
   data Json?
