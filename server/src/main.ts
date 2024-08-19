@@ -1,15 +1,26 @@
 declare const module: any;
 
-import { NestFactory } from '@nestjs/core';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AppModule } from './app.module';
+import { NestFactory, Reflector } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import { configSwagger } from "@common/swagger/swagger.config";
+import { TransformInterceptor } from "@interceptors/response.interceptors";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
-  if (module.hot) {
-    module.hot.accept();
-    module.hot.dispose(() => app.close());
-  }
+    const app = await NestFactory.create(AppModule);
+
+    //swagger config
+    configSwagger(app);
+
+    //global interceptors
+    app.useGlobalInterceptors(new TransformInterceptor(app.get(Reflector)));
+    
+    await app.listen(process.env.PORT);
+
+    //hot reload configs
+    if (module.hot) {
+        module.hot.accept();
+        module.hot.dispose(() => app.close());
+    }
 }
+
 bootstrap();

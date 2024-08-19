@@ -57,6 +57,8 @@ model Workspace {
   // timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model WorkspaceFollowing {
@@ -103,6 +105,7 @@ model Invitation {
   updatedAt DateTime @updatedAt
 
   @@index([workspaceId])
+  @@index([workspaceId, userId])
 }
 
 model VerifyToken {
@@ -118,5 +121,25 @@ model VerifyToken {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  //workspace
+  workspaceId String
+
+  //index
   @@unique([identifier, token])
+
+  @@index([workspaceId])
+  @@index([workspaceId, identifier, token])
+}
+
+model ForgotPasswordToken {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  token      String   @unique
+  expires    DateTime
+  //data
+  data Json?
+
+  // timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
