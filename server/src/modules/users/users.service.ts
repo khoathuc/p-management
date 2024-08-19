@@ -24,47 +24,11 @@ export class UsersService {
 	 * @param {string} id
      * @param {updateSettingsDto} data
      * @returns {Promise<User>}
-     * @throws {BadRequestException}
      */
-	async updateSettings(id: string, data: UpdateSettingsDto): Promise<User> {
-		const { username, email, currentPassword, confirmPassword, 
-				newPassword, title, location, currentStatus } = data
-		const updateData: any = {};
-
-		if(currentStatus) {
-			updateData.currentStatus = currentStatus;
-		}
-
-		if(title) {
-			updateData.title = title;
-		}
-
-		if(location) {
-			updateData.location = location;
-		}
-		
-		if(username) {
-			updateData.username = username;
-		}
-
-		if(currentPassword && confirmPassword && newPassword) {
-
-			const user = await this.getById(id)
-			const isPasswordMatch = await compare(currentPassword, user.password);
-			
-			if (!isPasswordMatch)
-				throw new BadRequestException('Current password is incorrect');
-
-			if(newPassword !== confirmPassword)
-				throw new BadRequestException('New password and confirm password do not match');
-
-			const hashPassword = await hash(newPassword, 10)
-			updateData.password = hashPassword
-		}
-
+	async update(id: string, data: UpdateSettingsDto): Promise<User> {
 		return this.prisma.user.update({
 			where: {id}, 
-			data: updateData
+			data
 		})
 	}
 

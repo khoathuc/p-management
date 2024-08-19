@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from "class-validator"
+import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, MinLength } from "class-validator"
 
 export class UpdateSettingsDto {
     @IsOptional()
@@ -7,30 +7,18 @@ export class UpdateSettingsDto {
     @IsNotEmpty()
     @ApiProperty()
     username: string
-    
-    @IsOptional()
-    @IsEmail()
-	@IsNotEmpty()
-    @ApiProperty()
-    email: string
-
-	@IsOptional()
-    @IsNotEmpty()
-    @MinLength(6)
-    @ApiProperty()
-    currentPassword: string;
 
     @IsOptional()
+    @IsString()
     @IsNotEmpty()
-    @MinLength(6)
     @ApiProperty()
-    newPassword: string;
+    firstName: string
 
     @IsOptional()
+    @IsString()
     @IsNotEmpty()
-    @MinLength(6)
     @ApiProperty()
-    confirmPassword: string;
+    lastName: string
 
     @IsOptional()
     @IsNotEmpty()
@@ -42,9 +30,10 @@ export class UpdateSettingsDto {
     @ApiProperty()
     location: string;
 
+    @IsNumber()
     @IsOptional()
     @IsNotEmpty()
     @ApiProperty()
-    currentStatus: string;
+    status: number;
     
 }
