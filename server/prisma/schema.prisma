@@ -130,3 +130,16 @@ model VerifyToken {
   @@index([workspaceId])
   @@index([workspaceId, identifier, token])
 }
+
+model ForgotPasswordToken {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  token      String   @unique
+  expires    DateTime
+  //data
+  data Json?
+
+  // timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
