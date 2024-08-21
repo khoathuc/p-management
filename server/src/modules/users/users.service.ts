@@ -15,4 +15,10 @@ export class UsersService {
 			where: {id},
 		});
 	}
+
+	async getByEmail(email: string): Promise<User> {
+		return this.prisma.user.findUnique({
+			where: {email},
+		})
+	}
 }

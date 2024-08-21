@@ -31,10 +31,10 @@ model User {
   lastName           String?
   avatar             String?
   currentWorkspaceId String?
-  emailVerified      Boolean @default(false)
+  emailVerified      Boolean   @default(false)
   accounts           Account[]
   //data
-  data Json?
+  data               Json?
 
   // timestamps
   createdAt DateTime @default(now())
@@ -89,7 +89,7 @@ model WorkspaceFollowing {
 model Invitation {
   id String @id @default(cuid())
 
-  userId         String
+  userId      String
   workspaceId String
 
   role           WorkspaceRole @default(Member)
@@ -126,14 +126,12 @@ model VerifyToken {
 
   //index
   @@unique([identifier, token])
-
   @@index([workspaceId])
   @@index([workspaceId, identifier, token])
 }
 
-
 model Account {
-  userId            String @id @unique @default(cuid())
+  userId            String  @id @unique @default(cuid())
   type              String
   email             String
   provider          String
@@ -144,9 +142,22 @@ model Account {
   token_type        String?
   scope             String?
   id_token          String?
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   user User[]
-}  
+}
+
+model ForgotPasswordToken {
+  id      String   @id @default(cuid())
+  userId  String   @unique
+  token   String   @unique
+  expires DateTime
+  //data
+  data    Json?
+
+  // timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

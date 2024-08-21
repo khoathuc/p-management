@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put, UseGuards, Req } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { User } from "src/modules/auth/models/user.model";
 import { LoginDto, RegisterDto } from "src/modules/auth/dto/auth.dto";
@@ -40,5 +40,23 @@ export class AuthController {
     @UseGuards(GoogleAuthGuard)
     googleRedirect() {
         return { msg: 'Google Redirect' }
+    //TODO: Forgot Password 
+    }
+
+    @Post('forgotpassword')
+    async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+        return this.userService.forgotPassword(forgotPasswordDto.email);
+    }
+
+    //TODO: Reset Password
+
+    @Post('resetpassword')
+    async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+        const {resetToken, newPassword} = resetPasswordDto;
+
+        return this.userService.resetPassword(
+            newPassword,
+            resetToken, 
+        )
     }
 }
