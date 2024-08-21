@@ -12,16 +12,22 @@ import './styles.scss';
 const Sidebar: React.FC = () => {
 
     let buttonClicked = (event: React.MouseEvent) => {
-        setUserMenuButtonActived(event.currentTarget as HTMLElement);
+        setUserMenuButtonActived(event.currentTarget);
     }
 
-    let [userMenuButtonActived, setUserMenuButtonActived] = React.useState<HTMLElement | null>(null);
+    let [userMenuButtonActived, setUserMenuButtonActived] = React.useState<Element | null>(null);
 
     useEffect(() => {
-        Array.from(document.getElementsByClassName('button-container')).forEach((element: Element) => {
-            element.classList.remove('onactive');
-        });
-        userMenuButtonActived?.classList.add('onactive');
+        setUserMenuButtonActived(document.querySelector('.sidebar .button-container'));
+    }, []);
+
+    useEffect(() => {
+        if (userMenuButtonActived) {
+            Array.from(document.querySelectorAll('.sidebar .button-container')).forEach((element: Element) => {
+                element.classList.remove('onactive');
+            });
+            userMenuButtonActived.classList.add('onactive');
+        }
     }, [userMenuButtonActived]);
 
     return (
