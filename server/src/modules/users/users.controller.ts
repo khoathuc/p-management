@@ -7,8 +7,8 @@ import { diskStorage } from "multer";
 import { extname, join } from "path";
 import { promises as fs } from 'fs';
 import { apiFile } from '@decorators/api.file.decorator';
-import { fileMimetypeFilter } from 'src/file.mimetype.filter';
-import { ParseFile } from 'src/parse.file.pipe';
+import { fileMimetypeFilter } from '@common/filters/file.mimetype.filter';
+import { ParseFile } from '@common/pipes/parse.file.pipe';
 
 @Controller('users')
 @ApiTags("users")
