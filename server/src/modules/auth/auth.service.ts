@@ -4,6 +4,7 @@ import { RegisterDto } from '@modules/auth/dto/auth.dto';
 import { PrismaService } from '@db/prisma.service';
 import { hash, compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { GoogleUserDto } from './dto/google.user.dto';
 @Injectable()
 export class AuthService {
 
@@ -73,4 +74,58 @@ export class AuthService {
         return user;
     }
 
+    async validateUser(googleUser: GoogleUserDto) {
+        console.log('AuthService');
+        console.log(googleUser);
+        // search for user
+        const user = await this.prismaService.user.findUnique({
+            where: {
+                email: googleUser.email,
+            }
+        })
+        if(user) {
+            const account = await this.prismaService.account.findUnique({
+                where: {
+                    userId: user.id,
+                }
+            })
+            if(account){
+                return account;
+            } 
+            await this.prismaService.account.create({
+                data: {
+                    userId: user.id,
+                    email: googleUser.email,
+                    type: 'Oauth',
+                    provider: 'Google',
+                    providerAccountId: googleUser.providerId,
+                    refresh_token: googleUser.refreshToken,
+                    access_token: googleUser.accessToken,
+                }
+            })
+            return account;    
+        }
+        console.log('User not found');
+        // create new user
+        console.log('Create new user'); 
+        const newUser = await this.prismaService.user.create({
+            data: {
+                username: googleUser.displayName,
+                email: googleUser.email,
+                status: 1,
+            }
+        })
+        const account = await this.prismaService.account.create({
+            data: {
+                userId: newUser.id,
+                email: googleUser.email,
+                type: 'Oauth',
+                provider: 'Google',
+                providerAccountId: googleUser.providerId,
+                refresh_token: googleUser.refreshToken,
+                access_token: googleUser.accessToken,
+            }
+        });
+        return account;
+    }
 }
