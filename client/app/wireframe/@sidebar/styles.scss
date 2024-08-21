@@ -1,0 +1,149 @@
+.sidebar {
+    width: 250px;
+    height: calc(100vh - 50px);
+    float: left;
+    background-color: #202020;
+    display: flex;
+    justify-content: center;
+
+    .wrapper {
+        width: 230px;
+
+        .user-menu {
+            position: relative;
+            width: 230px;
+            margin-top: 16px;
+
+            .avatar {
+                display: flex;
+                width: 20px;
+                height: 20px;
+                margin-left: 6px;
+            }
+
+            .name {
+                display: inline-block;
+                margin-left: 6px;
+                font-size: 14px;
+                color: #FFFFFF;
+
+                p {
+                    display: inline-block;
+                }
+
+                .angle-down {
+                    display: inline-block;
+                    margin-left: 4px;
+                }
+            }
+
+            .note-icon {
+                position: absolute;
+                color: white;
+                width: 13.33px;
+                height: 13.33px;
+                top: 1.33px;
+                right: 1.33px;
+            }
+        }
+
+        .public-workspace {
+            margin-top: 16px;
+
+            .title {
+                padding-left: 6px;
+                position: relative;
+                display: flex;
+                align-items: center;
+
+                p {
+                    display: inline-block;
+                    font-size: 12px;
+                    color: #9B9B9B;
+                }
+
+                .plus-icon {
+                    display: inline-block;
+                    position: absolute;
+                    width: 12px;
+                    height: 12px;
+                    color: #9B9B9B;
+                    right: 6px;
+                }
+            }
+        }
+
+        .private-workspace {
+            margin-top: 16px;
+
+            .title {
+                padding-left: 6px;
+                position: relative;
+                display: flex;
+                align-items: center;
+
+                p {
+                    display: inline-block;
+                    font-size: 12px;
+                    color: #9B9B9B;
+                }
+
+                .plus-icon {
+                    display: inline-block;
+                    position: absolute;
+                    width: 12px;
+                    height: 12px;
+                    color: #9B9B9B;
+                    right: 6px;
+                }
+            }
+        }
+
+        .button-container {
+            display: flex;
+            align-items: flex-end;
+            margin-top: 12px;
+            padding-left: 6px;
+
+            .icon {
+                display: inline-block;
+                margin-left: 6px;
+                width: 20px;
+                height: 20px;
+                color: #9B9B9B;
+            }
+
+            .text {
+                display: inline-block;
+
+                p {
+                    display: inline-block;
+                    margin-left: 9px;
+                    color: #9B9B9B;
+                    font-size: 14px;
+                }
+            }
+
+            &:hover {
+                cursor: pointer;
+
+                .icon {
+                    color: #FFFFFF;
+                }
+
+                .text {
+                    p {
+                        color: #FFFFFF;
+                    }
+                }
+            }
+        }
+
+        .onactive {
+            padding: 5px 6px;
+            border: 1px solid #9B9B9B;
+            background-color: #2C2C2C;
+            border-radius: 6px;
+        }
+    }
+}

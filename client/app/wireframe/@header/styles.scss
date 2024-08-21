@@ -1,0 +1,62 @@
+.header {
+    width: 100vw;
+    height: 50px;
+    background-color: #191919;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    border: 1px solid #363636;
+
+    .workspace-selector {
+        height: 24px;
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        padding-left: 16px;
+        justify-content: space-between;
+        margin-right: 40px;
+
+        .logo {
+            display: inline-block;
+            width: 24px;
+        }
+
+        .workspace {
+            display: inline-block;
+            margin: 0px 20px;
+        }
+
+        .recent {
+            display: inline-block;
+        }
+
+        .angle-down {
+            display: inline-block;
+            margin-left: 4px;
+        }
+    }
+
+    .tab-selector {
+        width: 680px;
+    }
+
+    .user-menu-and-notification {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        right: 20px;
+
+        .notification {
+            display: inline-block;
+            margin-right: 20px;
+
+        }
+
+        .avatar {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+        }
+    }
+}
