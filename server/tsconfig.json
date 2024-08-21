@@ -17,6 +17,8 @@
       "@interceptors/*": ["./src/interceptors/*"],
       "@interfaces/*": ["./src/interfaces/*"],
       "@decorators/*": ["./src/decorators/*"],
+      "@providers/*": ["./src/providers/*"],
+      "@shared/*": ["./src/shared/*"],
     },
     "incremental": true,
     "skipLibCheck": true,
