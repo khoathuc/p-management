@@ -75,9 +75,6 @@ export class AuthService {
     }
 
     async validateUser(googleUser: GoogleUserDto) {
-        console.log('AuthService');
-        console.log(googleUser);
-        // search for user
         const user = await this.prismaService.user.findUnique({
             where: {
                 email: googleUser.email,
@@ -105,9 +102,7 @@ export class AuthService {
             })
             return account;    
         }
-        console.log('User not found');
-        // create new user
-        console.log('Create new user'); 
+        // Create new User 
         const newUser = await this.prismaService.user.create({
             data: {
                 username: googleUser.displayName,
