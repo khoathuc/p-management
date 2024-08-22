@@ -4,13 +4,11 @@ import { WorkspacesLoader } from "./services/loader";
 import { WorkspacesWriter } from "./services/writer";
 import { WorkspacesFollowingService } from "./following/following.service";
 import { Workspace } from "@prisma/client";
+import { BaseDB } from "@providers/basedb/basedb.service";
 
 @Injectable()
 export class WorkspacesService {
-    constructor(
-        private _fs: WorkspacesFollowingService,
-        private _prisma: PrismaService
-    ) {}
+    constructor(private _prisma: PrismaService, private _fs: WorkspacesFollowingService) {}
 
     loader() {
         return new WorkspacesLoader(this._prisma);
@@ -19,7 +17,6 @@ export class WorkspacesService {
     writer() {
         return new WorkspacesWriter(this._prisma);
     }
-
 
     fs(){
         return this._fs;
@@ -32,7 +29,7 @@ export class WorkspacesService {
      */
     async delete(workspace: Workspace) {
         return await this._prisma.workspace.delete({
-            where: {id: workspace.id}
+            where: { id: workspace.id },
         });
     }
 }
