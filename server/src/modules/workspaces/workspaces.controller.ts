@@ -35,19 +35,19 @@ export class WorkspaceController {
         try {
             const { userId } = createWorkspaceDto;
 
-            //check if user is authenticated.
+            //Check if user is authenticated.
             //TODO: replace validate user by current user
             const user = await this.usersService.getById(userId);
             if (!user) {
                 throw new UnauthorizedException(HttpMessage.INVALID_DATA);
             }
 
-            //create new workspace
+            // Create new workspace
             const workspace = await this.workspacesService
                 .writer()
                 .create(createWorkspaceDto);
 
-            //on created workspace
+            // Create workspace following
             await this.workspacesService.fs().init(workspace);
 
             return workspace;
@@ -112,13 +112,13 @@ export class WorkspaceController {
                 throw new BadRequestException(HttpMessage.INVALID_DATA);
             }
 
-            //update workspace
+            // Update workspace
             const workspace = await this.workspacesService
                 .writer()
                 .update(id, updateWorkspaceDto);
 
-            //on update workspace
-            await this.workspacesService.fs().init(workspace);
+            // Update following
+            await this.workspacesService.fs().update(workspace);
 
             return workspace;
         } catch (error) {
@@ -145,7 +145,7 @@ export class WorkspaceController {
             // Delete workspace
             await this.workspacesService.delete(workspace);
 
-            // on remove workspace
+            // Remove following
             await this.workspacesService.fs().remove(workspace);
 
             return workspace;

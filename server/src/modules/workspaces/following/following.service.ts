@@ -3,22 +3,39 @@ import { Injectable } from "@nestjs/common";
 import { User, Workspace } from "@prisma/client";
 import { ARR } from "@shared/array";
 import { WorkspacesFollowingLoader } from "./services/loader";
-import { IFollowingsService } from "@providers/followings/followings.service";
+import {
+    AbstractFollowingsService,
+    IFollowingsService,
+} from "@providers/followings/followings.service";
 import { UsersService } from "@modules/users/users.service";
 
 @Injectable()
 export class WorkspacesFollowingService
+    extends AbstractFollowingsService<Workspace>
     implements IFollowingsService<Workspace>
 {
     constructor(
-        private _prisma: PrismaService,
-        private _usersService: UsersService
-    ) {}
+        _usersService: UsersService,
+        private _prisma: PrismaService
+    ) {
+        super(_usersService, _prisma.workspaceFollowing);
+    }
 
+    /**
+     * @desc get loader
+     * @returns {WorkspacesFollowingLoader}
+     */
     loader() {
         return new WorkspacesFollowingLoader(this._prisma);
     }
 
+
+    /**
+     * @desc get export following data
+     * @param workspace 
+     * @param user 
+     * @returns 
+     */
     getExport(workspace: Workspace, user: User) {
         const creating = workspace.userId == user.id ? true : false;
 
@@ -54,6 +71,7 @@ export class WorkspacesFollowingService
         };
     }
 
+
     /**
      * @desc create new workspace following
      * @param workspace
@@ -67,26 +85,16 @@ export class WorkspacesFollowingService
             workspace.members,
         ]);
 
-        // Update following
-        ARR.loop(user_ids, async (u) => {
-            const user = await this._usersService.getById(u);
-            if (!user) return;
-
-            const fsExport = this.getExport(workspace, user);
-
-            await this._prisma.workspaceFollowing.create({
-                data: {
-                    ...fsExport,
-                },
-            });
-        });
+        const users = await this._usersService.getByIds(user_ids);
+        await this.initFollowing(workspace, users);
     }
+
 
     /**
      * @desc update workspaces following
      * @param workspace
      */
-    async sync(workspace: Workspace) {
+    async update(workspace: Workspace) {
         // Get users
         const user_ids = ARR.merge([
             [workspace.userId],
@@ -95,28 +103,11 @@ export class WorkspacesFollowingService
             workspace.members,
         ]);
 
-        // Update following
-        ARR.loop(user_ids, async (u) => {
-            const user = await this._usersService.getById(u);
-            if (!user) return;
-
-            const fsExport = this.getExport(workspace, user);
-
-            await this._prisma.workspaceFollowing.update({
-                data: {
-                    ...fsExport,
-                },
-                where: {
-                    objectId_userId: {
-                        objectId: workspace.id,
-                        userId: user.id,
-                    },
-                },
-            });
-        });
+        const users = await this._usersService.getByIds(user_ids);
+        await this.updateFollowing(workspace, users);
     }
-    
-    
+
+
     /**
      * @desc remove workspaces following
      * @param workspace
@@ -130,19 +121,7 @@ export class WorkspacesFollowingService
             workspace.members,
         ]);
 
-        // Remove following
-        ARR.loop(user_ids, async (u) => {
-            const user = await this._usersService.getById(u);
-            if (!user) return;
-
-            await this._prisma.workspaceFollowing.delete({
-                where: {
-                    objectId_userId: {
-                        objectId: workspace.id,
-                        userId: user.id,
-                    },
-                },
-            });
-        });
+        const users = await this._usersService.getByIds(user_ids);
+        await this.removeFollowing(workspace, users);
     }
 }
