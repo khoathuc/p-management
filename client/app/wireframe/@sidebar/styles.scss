@@ -1,7 +1,5 @@
 .sidebar {
-    width: 250px;
-    height: calc(100vh - 50px);
-    float: left;
+    width: 300px;
     background-color: #202020;
     display: flex;
     justify-content: center;
@@ -99,6 +97,12 @@
             }
         }
 
+        .trash-and-help {
+            position: absolute;
+            bottom: 38px;
+            width: 230px;
+        }
+
         .button-container {
             display: flex;
             align-items: flex-end;
@@ -144,6 +148,10 @@
             border: 1px solid #9B9B9B;
             background-color: #2C2C2C;
             border-radius: 6px;
+        }
+
+        .plus-icon:hover {
+            cursor: pointer;
         }
     }
 }

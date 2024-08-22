@@ -1,7 +1,8 @@
+'use client';
 import { FaAngleDown } from "react-icons/fa6";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import './styles.scss';
-<IoIosNotificationsOutline />
+
 const Header = () => {
     return (
         <div className='header'>

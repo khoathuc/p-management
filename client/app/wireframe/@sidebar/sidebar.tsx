@@ -1,32 +1,49 @@
 'use client'
 import React, { useEffect } from 'react';
 import { CiCalendarDate } from "react-icons/ci";
+import { FaRegTrashAlt } from "react-icons/fa";
 import { FaAngleDown, FaPlus } from "react-icons/fa6";
-import { IoIosSearch } from "react-icons/io";
+import { IoIosSearch, IoMdHelpCircleOutline } from "react-icons/io";
 import { IoSettingsOutline } from "react-icons/io5";
 import { LuFileText, LuHome, LuInbox } from "react-icons/lu";
 import { MdDashboard } from "react-icons/md";
 import { PiNotePencilBold } from "react-icons/pi";
 import { TbUsers } from "react-icons/tb";
 import './styles.scss';
-const Sidebar: React.FC = () => {
 
-    let buttonClicked = (event: React.MouseEvent) => {
-        setUserMenuButtonActived(event.currentTarget);
+interface SidebarProps {
+    currentState: string;
+    setCurrentState: (state: string) => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ currentState, setCurrentState }) => {
+
+    let buttonClicked = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, num: number) => {
+        setUserMenuButtonActived(num);
+        // console.log(event.currentTarget.children[1].children[0].innerHTML);
+        setCurrentState(event.currentTarget.children[1].children[0].innerHTML);
     }
 
-    let [userMenuButtonActived, setUserMenuButtonActived] = React.useState<Element | null>(null);
+    let getBtnIdx = (e: Element) => {
+        let result = -1;
+        Array.from(document.querySelectorAll('.sidebar .button-container')).forEach((value: Element, idx: number) => {
+            if (value === e) {
+                result = idx;
+            }
+        })
+        return result;
+    };
+
+    let [userMenuButtonActived, setUserMenuButtonActived] = React.useState(-1);
+
 
     useEffect(() => {
-        setUserMenuButtonActived(document.querySelector('.sidebar .button-container'));
-    }, []);
-
-    useEffect(() => {
-        if (userMenuButtonActived) {
-            Array.from(document.querySelectorAll('.sidebar .button-container')).forEach((element: Element) => {
-                element.classList.remove('onactive');
-            });
-            userMenuButtonActived.classList.add('onactive');
+        Array.from(document.querySelectorAll('.sidebar .button-container')).forEach((element: Element) => {
+            element.classList.remove('onactive');
+        });
+        if (userMenuButtonActived != -1) {
+            // console.log(document.querySelectorAll('.sidebar .button-container')[userMenuButtonActived]);
+            document.querySelectorAll('.sidebar .button-container')[userMenuButtonActived].classList.add('onactive');
         }
     }, [userMenuButtonActived]);
 
@@ -46,23 +63,23 @@ const Sidebar: React.FC = () => {
                             <PiNotePencilBold />
                         </div>
                     </div>
-                    <div onClick={buttonClicked} className="button-container">
+                    <div onClick={(event) => buttonClicked(event, getBtnIdx(event.currentTarget))} className="button-container">
                         <div className='icon'><IoIosSearch /></div>
                         <div className='text'><p>Search</p></div>
                     </div>
-                    <div onClick={buttonClicked} className="button-container">
+                    <div onClick={(event) => buttonClicked(event, getBtnIdx(event.currentTarget))} className="button-container">
                         <div className='icon'><LuHome /></div>
                         <div className='text'><p>Home</p></div>
                     </div>
-                    <div onClick={buttonClicked} className="button-container">
+                    <div onClick={(event) => buttonClicked(event, getBtnIdx(event.currentTarget))} className="button-container">
                         <div className='icon'><LuInbox /></div>
                         <div className='text'><p>Inbox</p></div>
                     </div>
-                    <div onClick={buttonClicked} className="button-container">
+                    <div onClick={(event) => buttonClicked(event, getBtnIdx(event.currentTarget))} className="button-container">
                         <div className='icon'><TbUsers /></div>
                         <div className='text'><p>Users</p></div>
                     </div>
-                    <div onClick={buttonClicked} className="button-container">
+                    <div onClick={(event) => buttonClicked(event, getBtnIdx(event.currentTarget))} className="button-container">
                         <div className='icon'><IoSettingsOutline /></div>
                         <div className='text'><p>Settings</p></div>
                     </div>
@@ -73,15 +90,15 @@ const Sidebar: React.FC = () => {
                         <p>Public Workspace</p>
                         <FaPlus className='plus-icon' />
                     </div>
-                    <div onClick={buttonClicked} className="button-container">
+                    <div onClick={(event) => buttonClicked(event, getBtnIdx(event.currentTarget))} className="button-container">
                         <div className='icon'><MdDashboard /></div>
                         <div className='text'><p>Board</p></div>
                     </div>
-                    <div onClick={buttonClicked} className="button-container">
+                    <div onClick={(event) => buttonClicked(event, getBtnIdx(event.currentTarget))} className="button-container">
                         <div className='icon'><CiCalendarDate /></div>
                         <div className='text'><p>Calender</p></div>
                     </div>
-                    <div onClick={buttonClicked} className="button-container">
+                    <div onClick={(event) => buttonClicked(event, getBtnIdx(event.currentTarget))} className="button-container">
                         <div className='icon'><LuFileText /></div>
                         <div className='text'><p>Text</p></div>
                     </div>
@@ -92,17 +109,28 @@ const Sidebar: React.FC = () => {
                         <p>Private Workspace</p>
                         <FaPlus className='plus-icon' />
                     </div>
-                    <div onClick={buttonClicked} className="button-container">
+                    <div onClick={(event) => buttonClicked(event, getBtnIdx(event.currentTarget))} className="button-container">
                         <div className='icon'><MdDashboard /></div>
                         <div className='text'><p>Board</p></div>
                     </div>
-                    <div onClick={buttonClicked} className="button-container">
+                    <div onClick={(event) => buttonClicked(event, getBtnIdx(event.currentTarget))} className="button-container">
                         <div className='icon'><CiCalendarDate /></div>
                         <div className='text'><p>Calender</p></div>
                     </div>
-                    <div onClick={buttonClicked} className="button-container">
+                    <div onClick={(event) => buttonClicked(event, getBtnIdx(event.currentTarget))} className="button-container">
                         <div className='icon'><LuFileText /></div>
                         <div className='text'><p>Text</p></div>
+                    </div>
+                </div>
+
+                <div className="trash-and-help">
+                    <div onClick={(event) => buttonClicked(event, getBtnIdx(event.currentTarget))} className="button-container">
+                        <div className='icon'><FaRegTrashAlt /></div>
+                        <div className='text'><p>Trash</p></div>
+                    </div>
+                    <div onClick={(event) => buttonClicked(event, getBtnIdx(event.currentTarget))} className="button-container">
+                        <div className='icon'><IoMdHelpCircleOutline /></div>
+                        <div className='text'><p>Help & Support</p></div>
                     </div>
                 </div>
             </div>
