@@ -6,13 +6,13 @@ import Sidebar from './@sidebar/sidebar';
 import './styles.scss';
 const Wireframe = () => {
 
-    let [currentState, setCurrentState] = React.useState("123");
+    let [currentState, setCurrentState] = React.useState("");
 
     return (
         <div>
             <Header />
             <div className='body'>
-                <Sidebar currentState={currentState} setCurrentState={() => setCurrentState} />
+                <Sidebar currentState={currentState} setCurrentState={setCurrentState} />
                 <Content currentState={currentState}></Content>
             </div>
 
