@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { User } from 'src/modules/auth/models/user.model';
-import { RegisterDto } from 'src/modules/auth/dto/auth.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { User } from '@modules/auth/models/user.model';
+import { RegisterDto } from '@modules/auth/dto/auth.dto';
+import { PrismaService } from '@db/prisma.service';
 import { hash, compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 @Injectable()

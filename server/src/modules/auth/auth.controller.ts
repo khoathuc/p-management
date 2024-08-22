@@ -1,11 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { ResponseData } from "src/global/globalClass";
-import { HttpMessage, HttpStatus } from "src/global/globalEnum";
 import { User } from "src/modules/auth/models/user.model";
 import { LoginDto, RegisterDto } from "src/modules/auth/dto/auth.dto";
 
-@Controller('user')
+@Controller('auth')
 export class AuthController {
 
     constructor(private readonly userService: AuthService) { }
