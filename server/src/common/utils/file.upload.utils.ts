@@ -13,7 +13,7 @@ export function getMulterOptions(
         // The destination for uploaded files
         destination: destination,
 
-        // The name of uploaded file
+        // The name of the uploaded file
         filename: (req, file, callback) => {
           const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
           const ext = extname(file.originalname);
