@@ -7,7 +7,6 @@ import { diskStorage } from "multer";
 import { extname, join } from "path";
 import { promises as fs } from 'fs';
 import { apiFile } from '@decorators/api.file.decorator';
-import { fileMimetypeFilter } from '@common/filters/file.mimetype.filter';
 import { ParseFile } from '@common/pipes/parse.file.pipe';
 
 @Controller('users')
@@ -39,9 +38,13 @@ export class UsersController {
 	}
 
 	@Post(":id/avatar")
-	@apiFile('avatar', true, { fileFilter: fileMimetypeFilter('image')})
+	@apiFile('avatar', true, {
+		destination: './uploads', 
+		fileSizeLimit: 5 * 1024 * 1024, // Set maximum file size limit to 5 MB
+		mimetypes: ['image'] // Allow only image files
+	})
 	uploadAvatar(@Param('id') id: string, @UploadedFile(ParseFile) file: Express.Multer.File) {
 		console.log(file);
-		return this.usersService.uploadAvatar(id, file.filename)
+		return this.usersService.uploadAvatar(id, file.path)
 	}
 }
