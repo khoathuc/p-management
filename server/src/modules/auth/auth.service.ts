@@ -7,6 +7,8 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '@modules/users/users.service';
 import { nanoid } from 'nanoid';
 import { MailService } from 'src/providers/email/mail.service';
+import { Token } from '@shared/token';
+import { DTC } from '@shared/dtc';
 @Injectable()
 export class AuthService {
 
@@ -87,10 +89,9 @@ export class AuthService {
             }
         })
         if(user){
-
-            var expiryDate = new Date();
-            expiryDate.setHours(expiryDate.getHours() + 1);
-            const resetToken = nanoid();
+            const forgotPasswordExpiresHours = 1;
+            const expiryDate = DTC.nextHours(forgotPasswordExpiresHours);
+            const resetToken = Token.generate();
 
             // Delete existed token
             await this.prismaService.forgotPasswordToken.delete({

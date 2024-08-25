@@ -88,13 +88,13 @@ model WorkspaceFollowing {
 model Invitation {
   id String @id @default(cuid())
 
-  userId      String
   workspaceId String
 
   role           WorkspaceRole @default(Member)
   email          String
   inviteAccepted Boolean?      @default(false)
-  token          String?
+  expires        DateTime
+  token          String
 
   //data
   data Json?
@@ -103,8 +103,8 @@ model Invitation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([workspaceId, email])
   @@index([workspaceId])
-  @@index([workspaceId, userId])
 }
 
 model VerifyToken {
