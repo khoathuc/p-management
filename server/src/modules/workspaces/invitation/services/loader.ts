@@ -1,4 +1,4 @@
-import { Invitation, PrismaClient } from "@prisma/client";
+import { Invitation, PrismaClient, Workspace } from "@prisma/client";
 
 export class InvitationLoader {
     constructor(private _prisma: PrismaClient) {
@@ -31,12 +31,12 @@ export class InvitationLoader {
      * @param string workspaceId
      * @returns
      */
-    async getByEmailAndWorkspace(email: string, workspaceId: string): Promise<Invitation> {
+    async getByEmailAndWorkspace(email: string, workspace: Workspace): Promise<Invitation> {
         return await this._prisma.invitation.findUnique({
             where: {
                 workspaceId_email: {
                     email,
-                    workspaceId
+                    workspaceId: workspace.id
                 }
             },
         });

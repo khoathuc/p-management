@@ -10,9 +10,8 @@ import { WorkspacesAcl } from "./services/acl";
 export class WorkspacesService {
     constructor(
         private _prisma: PrismaService,
-        private _fs: WorkspacesFollowingService,
+        private _fs: WorkspacesFollowingService
     ) {}
-
 
     /**
      * @desc return workspace loader
@@ -29,10 +28,10 @@ export class WorkspacesService {
     writer() {
         return new WorkspacesWriter(this._prisma);
     }
-    
+
     /**
      * @desc return workspace acl
-     * @param workspace 
+     * @param workspace
      * @returns {WorkspacesAcl}
      */
     acl(workspace: Workspace) {
@@ -47,6 +46,12 @@ export class WorkspacesService {
         return this._fs;
     }
 
+    /**
+     * @desc export workspace
+     */
+    export(workspace: Workspace) {
+        return { id: workspace.id, name: workspace.name };
+    }
 
     /**
      * @desc delete a workspace

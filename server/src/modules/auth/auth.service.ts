@@ -6,7 +6,7 @@ import { hash, compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '@modules/users/users.service';
 import { nanoid } from 'nanoid';
-import { MailService } from 'src/providers/email/mail.service';
+import { EmailService } from 'src/providers/email/mail.service';
 import { Token } from '@shared/token';
 import { DTC } from '@shared/dtc';
 @Injectable()
@@ -16,7 +16,7 @@ export class AuthService {
         private prismaService: PrismaService, 
         private jwtService: JwtService, 
         private readonly userService: UsersService,
-        private mailService: MailService,
+        private emailService: EmailService,
     ) { }
 
     register = async (registerDto: RegisterDto): Promise<User> => {
@@ -109,7 +109,7 @@ export class AuthService {
                 }
             })
 
-            this.mailService.sendPasswordResetEmail(email, resetToken);
+            this.emailService.sendPasswordResetEmail(email, resetToken);
         }
         return { message: 'If this user exists, they will receive an email' };
     }

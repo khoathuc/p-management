@@ -50,7 +50,7 @@ export class WorkspaceInvitationController {
             // Check if email is already invited
             const invitationExisted = await this.invitationService
                 .loader()
-                .getByEmailAndWorkspace(email, workspaceId);
+                .getByEmailAndWorkspace(email, workspace);
 
             if (invitationExisted) {
                 throw new BadRequestException(
@@ -60,7 +60,8 @@ export class WorkspaceInvitationController {
 
             // create new invitation
             const invitation = await this.invitationService.writer().create({
-                workspaceId: workspaceId,
+                workspaceId: workspace.id,
+                workspaceExport: this.workspacesService.export(workspace),
                 email: email,
                 role: role,
                 token: Token.generate(),
@@ -69,8 +70,7 @@ export class WorkspaceInvitationController {
 
             // Invite by email
             if (viaEmail) {
-                console.log(invitation);
-                // this.invitationService.sendInvitationEmail(invitation);
+                this.invitationService.sendInvitationEmail(invitation);
             }
 
             // TODO: Invite by link

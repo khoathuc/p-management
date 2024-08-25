@@ -6,9 +6,10 @@ import { UsersModule } from "@modules/users/users.module";
 import { WorkspacesFollowingService } from "./following/following.service";
 import { WorkspaceInvitationController } from "./invitation.controller";
 import { InvitationService } from "./invitation/invitation.service";
+import { EmailModule } from "@providers/email/email.module";
 
 @Module({
-    imports: [PrismaModule, UsersModule],
+    imports: [PrismaModule, UsersModule, EmailModule],
     controllers: [WorkspaceController, WorkspaceInvitationController],
     providers: [
         WorkspacesService,
