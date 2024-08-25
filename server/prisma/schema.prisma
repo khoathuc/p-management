@@ -44,7 +44,7 @@ model User {
 model Workspace {
   id     String  @id @default(cuid())
   userId String
-  name   String  @unique
+  name   String
   logo   String?
 
   members String[]
@@ -130,12 +130,12 @@ model VerifyToken {
 }
 
 model ForgotPasswordToken {
-  id         String   @id @default(cuid())
-  userId     String   @unique
-  token      String   @unique
-  expires    DateTime
+  id      String   @id @default(cuid())
+  userId  String   @unique
+  token   String   @unique
+  expires DateTime
   //data
-  data Json?
+  data    Json?
 
   // timestamps
   createdAt DateTime @default(now())
