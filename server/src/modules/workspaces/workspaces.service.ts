@@ -1,71 +1,35 @@
-import { HttpException, Injectable } from "@nestjs/common";
 import { PrismaService } from "@db/prisma.service";
-import { Prisma } from "@prisma/client";
-import { CreateWorkspaceDto } from "./dto/create.workspace.dto";
-import { Workspace as WorkspaceModel } from "@prisma/client";
+import { forwardRef, HttpException, Inject, Injectable } from "@nestjs/common";
+import { WorkspacesLoader } from "./services/loader";
+import { WorkspacesWriter } from "./services/writer";
+import { WorkspacesFollowingService } from "./following/following.service";
+import { Workspace } from "@prisma/client";
+import { BaseDB } from "@providers/basedb/basedb.service";
 
 @Injectable()
 export class WorkspacesService {
-    constructor(private prisma: PrismaService) {}
+    constructor(private _prisma: PrismaService, private _fs: WorkspacesFollowingService) {}
 
-    async create(data: CreateWorkspaceDto): Promise<WorkspaceModel> {
-        if (data.name) {
-            const workspace = await this.prisma.workspace.findUnique({
-                where: { name: data.name as string },
-            });
-
-            if (workspace)
-                throw new HttpException("Workspace's name already taken", 400);
-        }
-
-        return this.prisma.workspace.create({
-            data: {
-                ...data,
-            },
-        });
+    loader() {
+        return new WorkspacesLoader(this._prisma);
     }
 
-    async getAll() {
-        const Workspace = await this.prisma.workspace.findMany();
-        if (!Workspace.length)
-            throw new HttpException("Workspace Not Found", 404);
-        return Workspace;
+    writer() {
+        return new WorkspacesWriter(this._prisma);
     }
 
-    async getById(id: string) {
-        const Workspace = await this.prisma.workspace.findUnique({
-            where: { id },
-        });
-
-        if (!Workspace) throw new HttpException("Workspace Not Found", 404);
-        return Workspace;
+    fs(){
+        return this._fs;
     }
 
-    async update(id: string, data: Prisma.WorkspaceUpdateInput) {
-        const Workspace = await this.getById(id);
-        if (!Workspace) throw new HttpException("Workspace Not Found", 404);
-
-        if (data.name) {
-            const Workspace = await this.prisma.workspace.findUnique({
-                where: { name: data.name as string },
-            });
-
-            if (Workspace)
-                throw new HttpException("WorkspaceName already taken", 400);
-        }
-
-        return this.prisma.workspace.update({
-            where: { id },
-            data,
+    /**
+     * @desc delete a workspace
+     * @param {Workspace} workspace
+     * @returns
+     */
+    async delete(workspace: Workspace) {
+        return await this._prisma.workspace.delete({
+            where: { id: workspace.id },
         });
-    }
-
-    async delete(id: string) {
-        const Workspace = await this.prisma.workspace.findUnique({
-            where: { id },
-        });
-
-        if (!Workspace) throw new HttpException("Workspace Not Found", 404);
-        return this.prisma.workspace.delete;
     }
 }
