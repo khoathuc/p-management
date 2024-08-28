@@ -2,7 +2,7 @@
 import './styles.scss';
 
 type ContentProps = {
-    currentState: string;
+    currentState: string | null;
 }
 const Content: React.FC<ContentProps> = ({ currentState }) => {
     return (

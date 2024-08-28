@@ -6,7 +6,7 @@ import Sidebar from './@sidebar/sidebar';
 import './styles.scss';
 const Wireframe = () => {
 
-    let [currentState, setCurrentState] = React.useState("");
+    let [currentState, setCurrentState] = React.useState<string | null>(null);
 
     return (
         <div>

@@ -12,8 +12,8 @@ import { TbUsers } from "react-icons/tb";
 import './styles.scss';
 
 interface SidebarProps {
-    currentState: string;
-    setCurrentState: (state: string) => void;
+    currentState: string | null;
+    setCurrentState: (state: string | null) => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ currentState, setCurrentState }) => {
@@ -21,7 +21,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentState, setCurrentState }) => {
     let buttonClicked = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, num: number) => {
         setUserMenuButtonActived(num);
         // console.log(event.currentTarget.children[1].children[0].innerHTML);
-        setCurrentState(event.currentTarget.children[1].children[0].innerHTML);
+        setCurrentState(event.currentTarget.children[1].children[0].textContent);
     }
 
     let getBtnIdx = (e: Element) => {
