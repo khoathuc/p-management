@@ -55,18 +55,23 @@ export class UsersController {
         }
     }
 
+
     @Post(":id/avatar")
-    @ApiFile("avatar", true, {
-        destination: "./uploads",
-        fileSizeLimit: 5 * 1024 * 1024, // Set maximum file size limit to 5 MB
-        mimetypes: ["image"], // Allow only image files
-    })
+    @ApiFile("avatar", true)
+    /**
+     * TODO : add user permissions.
+     */
     async uploadAvatar(
         @Param("id") id: string,
         @UploadedFile(ParseFile) file: Express.Multer.File
     ) {
         try {
-            return await this.usersService.uploadAvatar(id, file.path);
+            const user = await this.usersService.getById(id);
+            if(!user){
+                throw new Error("Invalid user");
+            }
+
+            return await this.usersService.uploadAvatar(user, file.path);
         } catch (error) {
             throw new HttpException(
                 error.message,

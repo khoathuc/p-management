@@ -12,7 +12,7 @@ export class UsersService {
     /**
      * @desc release user payload
      */
-    releasePayload(user: User): AuthPayload{
+    releasePayload(user: User): AuthPayload {
         return {
             id: user.id,
             firstName: user.firstName,
@@ -23,31 +23,29 @@ export class UsersService {
     }
     /**
      * @desc get all users
-     * @returns 
+     * @returns
      */
     async getAll(): Promise<User[]> {
         return await this.prisma.user.findMany();
     }
 
-
     /**
      * @desc upload avatar
-	 * @param {string} id
-     * @param {string} avatarPath
+     * @param {User} user
+     * @param {string} avatarUrl
      * @returns {Promise<User>}
      */
-	async uploadAvatar(id: string, avatarPath: string): Promise<User> {
-		return this.prisma.user.update({
-			where: {id},
-			data: {avatar: avatarPath}
-		})
-	}
-    
+    async uploadAvatar(user: User, avatarUrl: string): Promise<User> {
+        return this.prisma.user.update({
+            where: { id: user.id },
+            data: { avatar: avatarUrl },
+        });
+    }
 
     /**
      * @desc get user by id
-     * @param id 
-     * @returns 
+     * @param id
+     * @returns
      */
     async getById(id: string): Promise<User> {
         return await this.prisma.user.findUnique({
@@ -55,11 +53,10 @@ export class UsersService {
         });
     }
 
-
     /**
      * @desc get user by email.
-     * @param email 
-     * @returns 
+     * @param email
+     * @returns
      */
     async getByEmail(email: string): Promise<User> {
         return await this.prisma.user.findUnique({
@@ -75,10 +72,9 @@ export class UsersService {
         return await this.prisma.user.findMany({ where: { id: { in: ids } } });
     }
 
-
     /**
      * @desc get user by username or email.
-     * @returns 
+     * @returns
      */
     async getByEmailOrUsername({ email, username }): Promise<User> {
         return await this.prisma.user.findFirst({
@@ -88,32 +84,30 @@ export class UsersService {
         });
     }
 
-
     /**
      * @desc create new user
      */
     async create(data: RegisterDto): Promise<User> {
         const hashedPassword = await Crypt.hash(data.password, 10);
-        
+
         return await this.prisma.user.create({
             data: {
                 email: data.email,
                 username: data.username,
                 password: hashedPassword,
                 status: UserStatus.Active,
-                emailVerified: false
-            }
-        })
+                emailVerified: false,
+            },
+        });
     }
-
 
     /**
      * @desc user update password
      */
-    async updatePassword(user: User, newPassword: string){
+    async updatePassword(user: User, newPassword: string) {
         await this.prisma.user.update({
             where: {
-                id: user.id
+                id: user.id,
             },
             data: {
                 password: await Crypt.hash(newPassword, 10),
@@ -121,18 +115,16 @@ export class UsersService {
         });
     }
 
-
     /**
      * @desc delete user by id
-     * @param id 
-     * @returns 
+     * @param id
+     * @returns
      */
     async deleteById(id: string) {
         return await this.prisma.user.delete({
             where: {
                 id: id,
-            }
+            },
         });
     }
 }
-
