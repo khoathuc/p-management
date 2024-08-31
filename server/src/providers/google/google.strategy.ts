@@ -26,7 +26,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
             refreshToken: refreshToken,
             providerId: profile.id,
         })
-        console.log('Validate');
+        
         return user || null;
     }
 }
