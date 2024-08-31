@@ -1,7 +1,7 @@
 import { Module, ValidationPipe } from '@nestjs/common';
 import { PrismaModule } from '@db/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { UserModule } from './modules/users/user.module';
+import { UsersModule } from './modules/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_PIPE } from '@nestjs/core';
 import { WorkspaceModule } from '@modules/workspaces/workspaces.module';
@@ -9,7 +9,7 @@ import { WorkspaceModule } from '@modules/workspaces/workspaces.module';
   imports: [
     AuthModule,
     PrismaModule,
-    UserModule,
+    UsersModule,
     JwtModule,
     WorkspaceModule
   ],

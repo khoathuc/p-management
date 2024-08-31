@@ -21,16 +21,16 @@ enum UserStatus {
 model User {
   id String @id @default(cuid())
 
-  username String @unique
-  email    String @unique
+  username String @unique @db.VarChar(255)
+  email    String @unique @db.VarChar(255)
 
-  password String
-  status   Int
+  password String @db.VarChar(255)
+  status   UserStatus @default(Deactivated) 
 
-  firstName          String?
-  lastName           String?
-  avatar             String?
-  currentWorkspaceId String?
+  firstName          String? @db.VarChar(255)
+  lastName           String? @db.VarChar(255)
+  avatar             String? @db.VarChar(255)
+  currentWorkspaceId String? @db.VarChar(255)
   emailVerified      Boolean @default(false)
 
   //data
@@ -44,7 +44,7 @@ model User {
 model Workspace {
   id     String  @id @default(cuid())
   userId String
-  name   String  @unique
+  name   String  @db.VarChar(255)
   logo   String?
 
   members String[]
@@ -67,7 +67,7 @@ model WorkspaceFollowing {
   objectId String
   userId   String
 
-  name String
+  name String  @db.VarChar(255)
   logo String?
 
   creating Boolean
@@ -92,9 +92,9 @@ model Invitation {
   workspaceId String
 
   role           WorkspaceRole @default(Member)
-  email          String
+  email          String        @db.VarChar(255)
   inviteAccepted Boolean?      @default(false)
-  token          String?
+  token          String?       @db.VarChar(32)
 
   //data
   data Json?
@@ -109,8 +109,8 @@ model Invitation {
 
 model VerifyToken {
   id         String   @id @default(cuid())
-  identifier String
-  token      String   @unique
+  identifier String   @db.VarChar(255)
+  token      String   @unique @db.VarChar(32)
   expires    DateTime
 
   //data
@@ -130,12 +130,12 @@ model VerifyToken {
 }
 
 model ForgotPasswordToken {
-  id         String   @id @default(cuid())
-  userId     String   @unique
-  token      String   @unique
-  expires    DateTime
+  id      String   @id @default(cuid())
+  userId  String   @unique
+  token   String   @unique @db.VarChar(32)
+  expires DateTime
   //data
-  data Json?
+  data    Json?
 
   // timestamps
   createdAt DateTime @default(now())
