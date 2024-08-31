@@ -21,6 +21,7 @@
       "@providers/*": ["./src/providers/*"],
       "@shared/*": ["./src/shared/*"],
       "@email/*": ["./email/*"],
+      "@guards/*": ["./src/guards/*"],
     },
     "incremental": true,
     "skipLibCheck": true,

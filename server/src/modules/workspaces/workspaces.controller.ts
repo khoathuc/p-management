@@ -18,6 +18,7 @@ import { UpdateWorkspaceDto } from "./dto/update.workspace.dto";
 import { ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
 import { UsersService } from "@modules/users/users.service";
 
+
 @Controller("workspaces")
 @ApiTags("workspaces")
 export class WorkspaceController {

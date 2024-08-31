@@ -21,20 +21,23 @@ enum UserStatus {
 model User {
   id String @id @default(cuid())
 
-  username String @unique
-  email    String @unique
+  username String @unique @db.VarChar(255)
+  email    String @unique @db.VarChar(255)
 
-  password String
+  password String?
   status   Int
 
   firstName          String?
   lastName           String?
   avatar             String?
   currentWorkspaceId String?
-  emailVerified      Boolean @default(false)
-
+  emailVerified      Boolean   @default(false)
+  accounts           Account[]
+  title              String?
+  location           String?
+  
   //data
-  data Json?
+  data               Json?
 
   // timestamps
   createdAt DateTime @default(now())
@@ -44,7 +47,7 @@ model User {
 model Workspace {
   id     String  @id @default(cuid())
   userId String
-  name   String
+  name   String  @db.VarChar(255)
   logo   String?
 
   members String[]
@@ -67,7 +70,7 @@ model WorkspaceFollowing {
   objectId String
   userId   String
 
-  name String
+  name String  @db.VarChar(255)
   logo String?
 
   creating Boolean
@@ -109,8 +112,8 @@ model Invitation {
 
 model VerifyToken {
   id         String   @id @default(cuid())
-  identifier String
-  token      String   @unique
+  identifier String   @db.VarChar(255)
+  token      String   @unique @db.VarChar(32)
   expires    DateTime
 
   //data
@@ -129,10 +132,29 @@ model VerifyToken {
   @@index([workspaceId, identifier, token])
 }
 
+model Account {
+  userId            String  @id @unique @default(cuid())
+  type              String
+  email             String
+  provider          String
+  providerAccountId String  @unique
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User[]
+}
+
 model ForgotPasswordToken {
   id      String   @id @default(cuid())
   userId  String   @unique
-  token   String   @unique
+  token   String   @unique @db.VarChar(32)
   expires DateTime
   //data
   data    Json?
