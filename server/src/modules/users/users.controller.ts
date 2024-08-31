@@ -8,7 +8,7 @@ import {
     Param,
     UseGuards,
     Post,
-    UploadedFile
+    UploadedFile,
 } from "@nestjs/common";
 import { ApiFile } from "@decorators/api.file.decorator";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
@@ -55,19 +55,26 @@ export class UsersController {
         }
     }
 
-
     @Post(":id/avatar")
-	@ApiFile('avatar', true, {
-		destination: './uploads', 
-		fileSizeLimit: 5 * 1024 * 1024, // Set maximum file size limit to 5 MB
-		mimetypes: ['image'] // Allow only image files
-	})
-	uploadAvatar(@Param('id') id: string, @UploadedFile(ParseFile) file: Express.Multer.File) {
-		console.log(file);
-		return this.usersService.uploadAvatar(id, file.path)
-	}
+    @ApiFile("avatar", true, {
+        destination: "./uploads",
+        fileSizeLimit: 5 * 1024 * 1024, // Set maximum file size limit to 5 MB
+        mimetypes: ["image"], // Allow only image files
+    })
+    async uploadAvatar(
+        @Param("id") id: string,
+        @UploadedFile(ParseFile) file: Express.Multer.File
+    ) {
+        try {
+            return await this.usersService.uploadAvatar(id, file.path);
+        } catch (error) {
+            throw new HttpException(
+                error.message,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
 
-    
     @Delete(":id")
     /**
      * TODO: add admin permission
