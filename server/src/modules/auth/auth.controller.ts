@@ -5,11 +5,13 @@ import {
     UseGuards,
     HttpException,
     HttpStatus,
+    Get,
 } from "@nestjs/common";
 import { RegisterDto } from "./dto/register.dto";
 import { LoginDto } from "./dto/login.dto";
 import { LocalGuard } from "@guards/local.guard";
 import { AuthService } from "./auth.service";
+import { GoogleAuthGuard } from "src/providers/google/guards";
 import { ForgotPasswordDto } from "./dto/forgotpassword.dto";
 import { ResetPasswordDto } from "./dto/resetpassword.dto";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
@@ -50,6 +52,18 @@ export class AuthController {
                 HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
+    }
+
+    @Get('google/login')
+    @UseGuards(GoogleAuthGuard)
+    googleLogin() {
+        return { msg: 'Google Login' } 
+    }
+
+    @Get('google/redirect')
+    @UseGuards(GoogleAuthGuard)
+    googleRedirect() {
+        return { msg: 'Google Redirect' }
     }
 
     @Post("/forgot-password")

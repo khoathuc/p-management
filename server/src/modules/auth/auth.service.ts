@@ -15,6 +15,7 @@ import { nanoid } from "nanoid";
 import { MailService } from "src/providers/email/mail.service";
 import { LoginDto } from "./dto/login.dto";
 import { AuthPayload } from "@interfaces/auth.payload";
+import { GoogleUserDto } from './dto/google.user.dto';
 @Injectable()
 export class AuthService {
     constructor(
@@ -89,6 +90,57 @@ export class AuthService {
             accessToken,
             refreshToken,
         };
+    }
+
+
+    async validateUser(googleUser: GoogleUserDto) {
+        const user = await this.prismaService.user.findUnique({
+            where: {
+                email: googleUser.email,
+            }
+        })
+        if (user) {
+            const account = await this.prismaService.account.findUnique({
+                where: {
+                    userId: user.id,
+                }
+            })
+            if (account) {
+                return account;
+            }
+            await this.prismaService.account.create({
+                data: {
+                    userId: user.id,
+                    email: googleUser.email,
+                    type: 'Oauth',
+                    provider: 'Google',
+                    providerAccountId: googleUser.providerId,
+                    refresh_token: googleUser.refreshToken,
+                    access_token: googleUser.accessToken,
+                }
+            })
+            return account;
+        }
+        // Create new User 
+        const newUser = await this.prismaService.user.create({
+            data: {
+                username: googleUser.displayName,
+                email: googleUser.email,
+                status: 1,
+            }
+        })
+        const account = await this.prismaService.account.create({
+            data: {
+                userId: newUser.id,
+                email: googleUser.email,
+                type: 'Oauth',
+                provider: 'Google',
+                providerAccountId: googleUser.providerId,
+                refresh_token: googleUser.refreshToken,
+                access_token: googleUser.accessToken,
+            }
+        });
+        return account;
     }
 
     /**

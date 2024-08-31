@@ -4,6 +4,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_PIPE } from '@nestjs/core';
+import { PassportModule } from "@nestjs/passport";
 import { WorkspaceModule } from '@modules/workspaces/workspaces.module';
 @Module({
   imports: [
@@ -11,7 +12,8 @@ import { WorkspaceModule } from '@modules/workspaces/workspaces.module';
     PrismaModule,
     UsersModule,
     JwtModule,
-    WorkspaceModule
+    WorkspaceModule,
+    PassportModule.register({ session: true })
   ],
   providers: [
     {
