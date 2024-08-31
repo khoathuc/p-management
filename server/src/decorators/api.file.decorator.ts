@@ -4,19 +4,21 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBody, ApiConsumes } from "@nestjs/swagger";
 
 export function ApiFile(
-    fieldName: string = 'file', 
+    fieldName: string = "file",
     required: boolean = false,
     localOptions?: {
-        destination: string,
-        fileSizeLimit: number,
-        mimetypes: string[],
+        destination: string;
+        fileSizeLimit: number;
+        mimetypes: string[];
     }
-
 ) {
+
+    const destination = localOptions?localOptions.destination: "./uploads";
+    const fileSizeLimit = localOptions?localOptions.fileSizeLimit: 5 * 1024 * 1024;
+    const mimetypes = localOptions?localOptions.mimetypes: ["image"];
+
     const defaultOptions = getMulterOptions(
-        localOptions.destination,
-        localOptions.fileSizeLimit,
-        ...localOptions.mimetypes
+        destination, fileSizeLimit, mimetypes
     );
 
     return applyDecorators(
@@ -24,15 +26,15 @@ export function ApiFile(
         ApiConsumes("multipart/form-data"),
         ApiBody({
             schema: {
-                type: 'object',
+                type: "object",
                 required: required ? [fieldName] : [],
                 properties: {
                     [fieldName]: {
-                        type: 'string',
-                        format: 'binary'
-                    }
-                }
-            }
+                        type: "string",
+                        format: "binary",
+                    },
+                },
+            },
         })
-    )
+    );
 }
