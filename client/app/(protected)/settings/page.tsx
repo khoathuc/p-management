@@ -1,19 +1,13 @@
-"use client";
 import React from "react";
-import { auth } from "../../../auth";
-import { Button } from "@/components/ui/button";
-import { signOut, useSession } from "next-auth/react";
-import { logout } from "@/actions/logout";
-import { useCurrentUser } from "@/hooks/use-current-user";
+import { auth, signOut } from "../../../auth";
+import DataTable from "@/components/data-table"; // Adjust import path
+import SignOutButton from "@/components/auth/sign-out-button";
 
-const SettingsPage = () => {
-  const user = useCurrentUser();
-  const onClick = () => {
-    // logout(); // Client action
-    signOut(); // Server action
-  };
+const SettingsPage = async () => {
+  const session = await auth();
+  console.log(session);
 
-  return <div></div>;
+  return;
 };
 
 export default SettingsPage;
