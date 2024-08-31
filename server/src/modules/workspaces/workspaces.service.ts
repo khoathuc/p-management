@@ -1,10 +1,9 @@
 import { PrismaService } from "@db/prisma.service";
-import { forwardRef, HttpException, Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { WorkspacesLoader } from "./services/loader";
 import { WorkspacesWriter } from "./services/writer";
 import { WorkspacesFollowingService } from "./following/following.service";
 import { Workspace } from "@prisma/client";
-import { BaseDB } from "@providers/basedb/basedb.service";
 
 @Injectable()
 export class WorkspacesService {

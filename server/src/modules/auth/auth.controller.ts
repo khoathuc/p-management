@@ -1,52 +1,88 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards, Req } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Post,
+    UseGuards,
+    HttpException,
+    HttpStatus,
+} from "@nestjs/common";
+import { RegisterDto } from "./dto/register.dto";
+import { LoginDto } from "./dto/login.dto";
+import { LocalGuard } from "@guards/local.guard";
 import { AuthService } from "./auth.service";
-import { User } from "src/modules/auth/models/user.model";
-import { LoginDto, RegisterDto } from "src/modules/auth/dto/auth.dto";
 import { ForgotPasswordDto } from "./dto/forgotpassword.dto";
 import { ResetPasswordDto } from "./dto/resetpassword.dto";
+import { ApiTags, ApiOperation } from "@nestjs/swagger";
 
-@Controller('auth')
+@Controller("auth")
+@ApiTags("auth")
 export class AuthController {
+    constructor(private readonly authService: AuthService) {}
 
-    constructor(private readonly userService: AuthService) { }
-
-    @Get()
-    getUser(): Promise<User[]> {
-        return this.userService.getUser();
+    @Post("/register")
+    @ApiOperation({
+        summary: "Register new user",
+        description: "Register new user",
+    })
+    async register(@Body() registerDto: RegisterDto) {
+        try {
+            return await this.authService.register(registerDto);
+        } catch (error) {
+            throw new HttpException(
+                error.message,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
-    @Post('register')
-    register(@Body() body: RegisterDto): Promise<User> {
-        return this.userService.register(body)
+    @Post("/login")
+    @ApiOperation({
+        summary: "Login user",
+        description: "Login user",
+    })
+    @UseGuards(LocalGuard)
+    async login(@Body() loginDto: LoginDto) {
+        try {
+            return this.authService.login(loginDto);
+        } catch (error) {
+            throw new HttpException(
+                error.message,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
-    @Post('login')
-    login(@Body() body: LoginDto): Promise<any> {
-        return this.userService.login(body)
-    }
-
-    @Get('/:username')
-    detailUser(@Param('username') username: string): Promise<User> {
-        return this.userService.detailUser(username);
-
-    }
-
-    //TODO: Forgot Password 
-
-    @Post('forgotpassword')
+    @Post("/forgot-password")
+    @ApiOperation({
+        summary: "User forgot password",
+        description: "User forgot password",
+    })
     async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
-        return this.userService.forgotPassword(forgotPasswordDto.email);
+        try {
+            return this.authService.forgotPassword(forgotPasswordDto.email);
+        } catch (error) {
+            throw new HttpException(
+                error.message,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
-    //TODO: Reset Password
-
-    @Post('resetpassword')
+    @Post("/reset-password")
+    @ApiOperation({
+        summary: "User reset password",
+        description: "User reset password",
+    })
     async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
-        const {resetToken, newPassword} = resetPasswordDto;
+        try {
+            const { resetToken, newPassword } = resetPasswordDto;
 
-        return this.userService.resetPassword(
-            newPassword,
-            resetToken, 
-        )
+            return this.authService.resetPassword(newPassword, resetToken);
+        } catch (error) {
+            throw new HttpException(
+                error.message,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }

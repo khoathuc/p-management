@@ -19,6 +19,7 @@
       "@decorators/*": ["./src/decorators/*"],
       "@providers/*": ["./src/providers/*"],
       "@shared/*": ["./src/shared/*"],
+      "@guards/*": ["./src/guards/*"],
     },
     "incremental": true,
     "skipLibCheck": true,
