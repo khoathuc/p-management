@@ -4,7 +4,6 @@ import { RegisterDto } from "@modules/auth/dto/register.dto";
 import { Injectable } from "@nestjs/common";
 import { User, UserStatus } from "@prisma/client";
 import { Crypt } from "@shared/crypt";
-import { hash, compare } from "bcrypt";
 
 @Injectable()
 export class UsersService {
@@ -30,6 +29,20 @@ export class UsersService {
         return await this.prisma.user.findMany();
     }
 
+
+    /**
+     * @desc upload avatar
+	 * @param {string} id
+     * @param {string} avatarPath
+     * @returns {Promise<User>}
+     */
+	async uploadAvatar(id: string, avatarPath: string): Promise<User> {
+		return this.prisma.user.update({
+			where: {id},
+			data: {avatar: avatarPath}
+		})
+	}
+    
 
     /**
      * @desc get user by id
@@ -122,3 +135,4 @@ export class UsersService {
         });
     }
 }
+
