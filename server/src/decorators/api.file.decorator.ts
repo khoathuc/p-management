@@ -1,10 +1,9 @@
 import { getMulterOptions } from "@common/utils/file.upload.utils";
 import { applyDecorators, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { MulterOptions } from "@nestjs/platform-express/multer/interfaces/multer-options.interface";
 import { ApiBody, ApiConsumes } from "@nestjs/swagger";
 
-export function apiFile(
+export function ApiFile(
     fieldName: string = 'file', 
     required: boolean = false,
     localOptions?: {

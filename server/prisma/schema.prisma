@@ -21,16 +21,16 @@ enum UserStatus {
 model User {
   id String @id @default(cuid())
 
-  username String @unique
-  email    String @unique
+  username String @unique @db.VarChar(255)
+  email    String @unique @db.VarChar(255)
 
-  password String
-  status   Int
+  password String @db.VarChar(255)
+  status   UserStatus @default(Deactivated) 
 
-  firstName          String?
-  lastName           String?
-  avatar             String?
-  currentWorkspaceId String?
+  firstName          String? @db.VarChar(255)
+  lastName           String? @db.VarChar(255)
+  avatar             String? @db.VarChar(255)
+  currentWorkspaceId String? @db.VarChar(255)
   emailVerified      Boolean @default(false)
   title              String?
   location           String?
@@ -46,7 +46,7 @@ model User {
 model Workspace {
   id     String  @id @default(cuid())
   userId String
-  name   String  @unique
+  name   String  @db.VarChar(255)
   logo   String?
 
   members String[]
@@ -64,27 +64,26 @@ model Workspace {
 }
 
 model WorkspaceFollowing {
-  id   String        @id @default(cuid())
-  role WorkspaceRole @default(Member)
+  id String @id @default(cuid())
 
   objectId String
   userId   String
 
-  name String
-  logo String
+  name String  @db.VarChar(255)
+  logo String?
 
-  creating  Boolean
-  ownering  Boolean
-  is_admin  Boolean
-  is_member Boolean
-
+  creating Boolean
+  ownering Boolean
+  isAdmin  Boolean
+  isMember Boolean
   //data
-  data Json?
+  data     Json?
 
   // timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([objectId, userId])
   @@index([userId])
 }
 
@@ -95,9 +94,9 @@ model Invitation {
   workspaceId String
 
   role           WorkspaceRole @default(Member)
-  email          String
+  email          String        @db.VarChar(255)
   inviteAccepted Boolean?      @default(false)
-  token          String?
+  token          String?       @db.VarChar(32)
 
   //data
   data Json?
@@ -112,8 +111,8 @@ model Invitation {
 
 model VerifyToken {
   id         String   @id @default(cuid())
-  identifier String
-  token      String   @unique
+  identifier String   @db.VarChar(255)
+  token      String   @unique @db.VarChar(32)
   expires    DateTime
 
   //data
@@ -130,4 +129,17 @@ model VerifyToken {
   @@unique([identifier, token])
   @@index([workspaceId])
   @@index([workspaceId, identifier, token])
+}
+
+model ForgotPasswordToken {
+  id      String   @id @default(cuid())
+  userId  String   @unique
+  token   String   @unique @db.VarChar(32)
+  expires DateTime
+  //data
+  data    Json?
+
+  // timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
