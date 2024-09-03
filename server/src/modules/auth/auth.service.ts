@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '@modules/users/users.service';
 import { nanoid } from 'nanoid';
 import { MailService } from 'src/providers/email/mail.service';
+
 @Injectable()
 export class AuthService {
 
@@ -35,7 +36,7 @@ export class AuthService {
         return res;
     }
 
-    login = async (data: { email: string, password: string }): Promise<any> => {
+    login = async (data: { email: string, password: string, rememberMe: boolean }): Promise<any> => {
         const user = await this.prismaService.user.findUnique({
             where: {
                 email: data.email
@@ -53,10 +54,10 @@ export class AuthService {
             throw new HttpException({ message: "Password is incorrect." }, HttpStatus.UNAUTHORIZED);
         }
 
-        const payload = { id: user.id, username: user.username, email: user.username }
+        const payload = { id: user.id, username: user.username, email: user.email }
         const accessToken = await this.jwtService.signAsync(payload, {
             secret: process.env.ACCESS_TOKEN_KEY,
-            expiresIn: '1h'
+            expiresIn: data.rememberMe ? '30d' : '1h'
         })
         const refreshToken = await this.jwtService.signAsync(payload, {
             secret: process.env.REFRESH_TOKEN_KEY,
@@ -155,4 +156,36 @@ export class AuthService {
             }
         })
     }
-}
+
+    async refreshAccessToken(refreshToken: string){
+        try{
+            const user = this.prismaService.user.findUnique({
+                where: {
+                    refreshToken: refreshToken,
+                }
+            })
+            const storedRefreshToken = (await user).refreshToken;
+            
+            const payload = { 
+                id: (await user).id, 
+                username: (await user).username, 
+                email: (await user).email 
+            }
+
+            if(storedRefreshToken !== refreshToken){
+                throw new UnauthorizedException('Invalid refresh token');
+            }
+            const newAccessToken = this.jwtService.signAsync(payload, {
+                secret: process.env.ACCESS_TOKEN_KEY,
+                expiresIn: '15m',
+            })
+
+            return {
+                access_token: newAccessToken,
+            };
+        } catch (error){
+            throw new UnauthorizedException('Refresh Token expired or invalid');
+        }
+    }
+
+}   

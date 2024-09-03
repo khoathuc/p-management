@@ -42,11 +42,11 @@ export class AuthController {
 
     @Post('resetpassword')
     async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
-        const {resetToken, newPassword} = resetPasswordDto;
+        const { resetToken, newPassword } = resetPasswordDto;
 
         return this.userService.resetPassword(
             newPassword,
-            resetToken, 
+            resetToken,
         )
     }
 }
