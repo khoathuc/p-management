@@ -1,14 +1,12 @@
 import { RegisterDto } from "@modules/auth/dto/register.dto";
 import {
     BadRequestException,
-    HttpException,
-    HttpStatus,
     Injectable,
     InternalServerErrorException,
     UnauthorizedException,
 } from "@nestjs/common";
 import { PrismaService } from "@db/prisma.service";
-import { hash, compare } from "bcrypt";
+import { compare } from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 import { UsersService } from "@modules/users/users.service";
 import { nanoid } from "nanoid";
@@ -16,6 +14,7 @@ import { MailService } from "src/providers/email/mail.service";
 import { LoginDto } from "./dto/login.dto";
 import { AuthPayload } from "@interfaces/auth.payload";
 import { GoogleUserDto } from './dto/google.user.dto';
+import { UserStatus } from "@prisma/client";
 @Injectable()
 export class AuthService {
     constructor(
@@ -94,11 +93,7 @@ export class AuthService {
 
 
     async validateUser(googleUser: GoogleUserDto) {
-        const user = await this.prismaService.user.findUnique({
-            where: {
-                email: googleUser.email,
-            }
-        })
+        const user = await this.usersService.getByEmail(googleUser.email);
         if (user) {
             const account = await this.prismaService.account.findUnique({
                 where: {
@@ -126,7 +121,7 @@ export class AuthService {
             data: {
                 username: googleUser.displayName,
                 email: googleUser.email,
-                status: 1,
+                status: UserStatus.Active,
             }
         })
         const account = await this.prismaService.account.create({
