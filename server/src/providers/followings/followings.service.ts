@@ -2,18 +2,16 @@ import { UsersService } from "@modules/users/users.service";
 import { User } from "@prisma/client";
 import { ARR } from "@shared/array";
 
-export interface IFollowingsService<T extends {id: string}> {
+export interface IFollowingsService<T extends { id: string }> {
     getExport(obj: T, user: User);
 }
 
-export abstract class AbstractFollowingsService<T extends {id: string}>
+export abstract class AbstractFollowingsService<T extends { id: string }>
     implements IFollowingsService<T>
 {
-    _usersService: UsersService;
-    _model: any;
+    private _model: any;
 
-    constructor(usersService: UsersService, model: any) {
-        this._usersService = usersService;
+    constructor(model: any) {
         this._model = model;
     }
 
@@ -59,11 +57,11 @@ export abstract class AbstractFollowingsService<T extends {id: string}>
 
     /**
      * @desc update following of object
-     * @param obj 
-     * @param users 
+     * @param obj
+     * @param users
      */
-    async removeFollowing(obj:T, users: User[]){
-        ARR.loop(users, async(user)=>{
+    async removeFollowing(obj: T, users: User[]) {
+        ARR.loop(users, async (user) => {
             await this._model.delete({
                 where: {
                     objectId_userId: {
@@ -72,7 +70,7 @@ export abstract class AbstractFollowingsService<T extends {id: string}>
                     },
                 },
             });
-        })
+        });
     }
 
     abstract getExport(obj: T, user: User);
