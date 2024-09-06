@@ -25,28 +25,34 @@ export class TransformInterceptor<T>
     ): Observable<Response<T>> {
         return next.handle().pipe(
             map((res: unknown) => this.responseHandler(res, context)),
-            catchError((err: HttpException) =>
+            catchError((err) =>
                 throwError(() => this.errorHandler(err, context))
             )
         );
     }
 
-    errorHandler(exception: HttpException, context: ExecutionContext) {
+    errorHandler(exception, context: ExecutionContext) {
         const ctx = context.switchToHttp();
         const response = ctx.getResponse();
         const request = ctx.getRequest();
 
-        const status =
-            exception instanceof HttpException
-                ? exception.getStatus()
-                : HttpStatus.INTERNAL_SERVER_ERROR;
+        let status: number;
+        let message: string;
 
+        if (exception instanceof HttpException) {
+            status = exception.getStatus();
+            message = exception.message;
+        } else {
+            // Handle non-HttpException errors
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            message = 'An unexpected error occurred';
+        }
+        
         response.status(status).json({
             status: false,
             statusCode: status,
             path: request.url,
-            message: exception.message,
-            result: exception,
+            message: message,
             timestamp: format(new Date().toISOString(), "yyyy-MM-dd HH:mm:ss"),
         });
     }
