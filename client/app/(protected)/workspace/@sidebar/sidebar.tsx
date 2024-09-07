@@ -18,6 +18,10 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ currentState, setCurrentState }) => {
 
+    let resetButtonActived = () => {
+        setUserMenuButtonActived(-1);
+    }
+
     let buttonClicked = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, num: number) => {
         setUserMenuButtonActived(num);
         // console.log(event.currentTarget.children[1].children[0].innerHTML);
@@ -46,6 +50,12 @@ const Sidebar: React.FC<SidebarProps> = ({ currentState, setCurrentState }) => {
             document.querySelectorAll('.sidebar .button-container')[userMenuButtonActived].classList.add('onactive');
         }
     }, [userMenuButtonActived]);
+
+    useEffect(() => {
+        if (currentState === null) {
+            resetButtonActived();
+        }
+    }, [currentState]);
 
     return (
         <div className='sidebar'>

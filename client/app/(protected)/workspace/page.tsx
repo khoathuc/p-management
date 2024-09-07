@@ -1,19 +1,28 @@
 'use client';
-import React from 'react';
+import { create } from 'zustand';
 import Content from './@content/content';
 import Header from './@header/header';
 import Sidebar from './@sidebar/sidebar';
 import './styles.scss';
+
+type StateStore = {
+    currentState: string | null;
+    setCurrentState: (state: string | null) => void;
+};
+
+export const useSidebarState = create<StateStore>((set, get) => ({
+    currentState: null,
+    setCurrentState: (state) => set({ currentState: state }),
+}));
+
 const Wireframe = () => {
-
-    let [currentState, setCurrentState] = React.useState<string | null>(null);
-
+    const { currentState, setCurrentState } = useSidebarState();
     return (
         <div>
             <Header />
             <div className='body'>
                 <Sidebar currentState={currentState} setCurrentState={setCurrentState} />
-                <Content currentState={currentState}></Content>
+                <Content ></Content>
             </div>
 
         </div>

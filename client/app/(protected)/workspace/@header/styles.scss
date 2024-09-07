@@ -7,6 +7,8 @@
     display: flex;
     align-items: center;
     border: 1px solid #363636;
+    position: relative;
+    z-index: 999999;
 
     .workspace-selector {
         height: 24px;
