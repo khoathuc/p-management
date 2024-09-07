@@ -15,10 +15,10 @@ export class WorkspacesFollowingService
     implements IFollowingsService<Workspace>
 {
     constructor(
-        _usersService: UsersService,
-        private _prisma: PrismaService
+        private _usersService: UsersService,
+        private _prismaService: PrismaService
     ) {
-        super(_usersService, _prisma.workspaceFollowing);
+        super(_prismaService.workspaceFollowing);
     }
 
     /**
@@ -26,7 +26,7 @@ export class WorkspacesFollowingService
      * @returns {WorkspacesFollowingLoader}
      */
     loader() {
-        return new WorkspacesFollowingLoader(this._prisma);
+        return new WorkspacesFollowingLoader(this._prismaService);
     }
 
 

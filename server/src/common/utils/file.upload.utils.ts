@@ -6,7 +6,7 @@ import { extname } from "path";
 export function getMulterOptions(
     destination: string, 
     fileSizeLimit: number, 
-    ...mimetypes: string[]
+    mimetypes: string[]
   ): MulterOptions {
     return {
       storage: diskStorage({

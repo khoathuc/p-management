@@ -1,15 +1,20 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common'
-import { RegisterDto } from './dto/register.dto';
-import { PrismaService } from '@db/prisma.service';
-import { hash, compare } from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '@modules/users/users.service';
-import { nanoid } from 'nanoid';
-import { EmailService } from 'src/providers/email/mail.service';
+import { EmailService } from "src/providers/email/mail.service";
+import { RegisterDto } from "@modules/auth/dto/register.dto";
+import {
+    BadRequestException,
+    Injectable,
+    InternalServerErrorException,
+    UnauthorizedException,
+} from "@nestjs/common";
+import { PrismaService } from "@db/prisma.service";
+import { compare } from "bcrypt";
+import { JwtService } from "@nestjs/jwt";
+import { UsersService } from "@modules/users/users.service";
+import { nanoid } from "nanoid";
+import { LoginDto } from "./dto/login.dto";
 import { AuthPayload } from "@interfaces/auth.payload";
-import { GoogleUserDto } from './dto/google.user.dto';
-import { LoginDto } from './dto/login.dto';
-
+import { GoogleUserDto } from "./dto/google.user.dto";
+import { UserStatus } from "@prisma/client";
 @Injectable()
 export class AuthService {
     constructor(
@@ -86,19 +91,14 @@ export class AuthService {
         };
     }
 
-
     async validateUser(googleUser: GoogleUserDto) {
-        const user = await this.prismaService.user.findUnique({
-            where: {
-                email: googleUser.email,
-            }
-        })
+        const user = await this.usersService.getByEmail(googleUser.email);
         if (user) {
             const account = await this.prismaService.account.findUnique({
                 where: {
                     userId: user.id,
-                }
-            })
+                },
+            });
             if (account) {
                 return account;
             }
@@ -106,33 +106,33 @@ export class AuthService {
                 data: {
                     userId: user.id,
                     email: googleUser.email,
-                    type: 'Oauth',
-                    provider: 'Google',
+                    type: "Oauth",
+                    provider: "Google",
                     providerAccountId: googleUser.providerId,
                     refresh_token: googleUser.refreshToken,
                     access_token: googleUser.accessToken,
-                }
-            })
+                },
+            });
             return account;
         }
-        // Create new User 
+        // Create new User
         const newUser = await this.prismaService.user.create({
             data: {
                 username: googleUser.displayName,
                 email: googleUser.email,
-                status: 1,
-            }
-        })
+                status: UserStatus.Active,
+            },
+        });
         const account = await this.prismaService.account.create({
             data: {
                 userId: newUser.id,
                 email: googleUser.email,
-                type: 'Oauth',
-                provider: 'Google',
+                type: "Oauth",
+                provider: "Google",
                 providerAccountId: googleUser.providerId,
                 refresh_token: googleUser.refreshToken,
                 access_token: googleUser.accessToken,
-            }
+            },
         });
         return account;
     }
