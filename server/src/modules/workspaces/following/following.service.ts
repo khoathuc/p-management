@@ -2,7 +2,6 @@ import { PrismaService } from "@db/prisma.service";
 import { Injectable } from "@nestjs/common";
 import { User, Workspace } from "@prisma/client";
 import { ARR } from "@shared/array";
-import { WorkspacesFollowingLoader } from "./services/loader";
 import {
     AbstractFollowingsService,
     IFollowingsService,
@@ -22,19 +21,10 @@ export class WorkspacesFollowingService
     }
 
     /**
-     * @desc get loader
-     * @returns {WorkspacesFollowingLoader}
-     */
-    loader() {
-        return new WorkspacesFollowingLoader(this._prismaService);
-    }
-
-
-    /**
      * @desc get export following data
-     * @param workspace 
-     * @param user 
-     * @returns 
+     * @param workspace
+     * @param user
+     * @returns
      */
     getExport(workspace: Workspace, user: User) {
         const creating = workspace.userId == user.id ? true : false;
@@ -71,7 +61,6 @@ export class WorkspacesFollowingService
         };
     }
 
-
     /**
      * @desc create new workspace following
      * @param workspace
@@ -89,7 +78,6 @@ export class WorkspacesFollowingService
         await this.initFollowing(workspace, users);
     }
 
-
     /**
      * @desc update workspaces following
      * @param workspace
@@ -106,7 +94,6 @@ export class WorkspacesFollowingService
         const users = await this._usersService.getByIds(user_ids);
         await this.updateFollowing(workspace, users);
     }
-
 
     /**
      * @desc remove workspaces following

@@ -1,3 +1,4 @@
+import { EmailService } from "src/providers/email/mail.service";
 import { RegisterDto } from "@modules/auth/dto/register.dto";
 import {
     BadRequestException,
@@ -10,10 +11,9 @@ import { compare } from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 import { UsersService } from "@modules/users/users.service";
 import { nanoid } from "nanoid";
-import { MailService } from "src/providers/email/mail.service";
 import { LoginDto } from "./dto/login.dto";
 import { AuthPayload } from "@interfaces/auth.payload";
-import { GoogleUserDto } from './dto/google.user.dto';
+import { GoogleUserDto } from "./dto/google.user.dto";
 import { UserStatus } from "@prisma/client";
 @Injectable()
 export class AuthService {
@@ -21,7 +21,7 @@ export class AuthService {
         private prismaService: PrismaService,
         private jwtService: JwtService,
         private readonly usersService: UsersService,
-        private mailService: MailService
+        private emailService: EmailService
     ) {}
 
     /**
@@ -91,15 +91,14 @@ export class AuthService {
         };
     }
 
-
     async validateUser(googleUser: GoogleUserDto) {
         const user = await this.usersService.getByEmail(googleUser.email);
         if (user) {
             const account = await this.prismaService.account.findUnique({
                 where: {
                     userId: user.id,
-                }
-            })
+                },
+            });
             if (account) {
                 return account;
             }
@@ -107,33 +106,33 @@ export class AuthService {
                 data: {
                     userId: user.id,
                     email: googleUser.email,
-                    type: 'Oauth',
-                    provider: 'Google',
+                    type: "Oauth",
+                    provider: "Google",
                     providerAccountId: googleUser.providerId,
                     refresh_token: googleUser.refreshToken,
                     access_token: googleUser.accessToken,
-                }
-            })
+                },
+            });
             return account;
         }
-        // Create new User 
+        // Create new User
         const newUser = await this.prismaService.user.create({
             data: {
                 username: googleUser.displayName,
                 email: googleUser.email,
                 status: UserStatus.Active,
-            }
-        })
+            },
+        });
         const account = await this.prismaService.account.create({
             data: {
                 userId: newUser.id,
                 email: googleUser.email,
-                type: 'Oauth',
-                provider: 'Google',
+                type: "Oauth",
+                provider: "Google",
                 providerAccountId: googleUser.providerId,
                 refresh_token: googleUser.refreshToken,
                 access_token: googleUser.accessToken,
-            }
+            },
         });
         return account;
     }
@@ -171,7 +170,7 @@ export class AuthService {
         });
 
         // Send password reset email.
-        await this.mailService.sendPasswordResetEmail(email, resetToken);
+        await this.sendPasswordResetEmail(email, resetToken);
     }
 
     /**
@@ -206,5 +205,19 @@ export class AuthService {
 
         // Update password
         return await this.usersService.updatePassword(user, newPassword);
+    }
+
+    /**
+     * @desc send password reset email
+     */
+    async sendPasswordResetEmail(email: string, token: string) {
+        const resetLink = `${process.env.FRONT_END_URL}/reset-password?token=${token}`;
+
+        await this.emailService.sendEmail({
+            from: "Auth-backend service",
+            to: email,
+            subject: "Password Reset Request",
+            html: `<p>You requested a password reset. Click the link below to reset your password:</p><p><a href="${resetLink}">Reset Password</a></p>`,
+        });
     }
 }

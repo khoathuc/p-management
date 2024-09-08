@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "jsx": "react",
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
@@ -19,6 +20,7 @@
       "@decorators/*": ["./src/decorators/*"],
       "@providers/*": ["./src/providers/*"],
       "@shared/*": ["./src/shared/*"],
+      "@email/*": ["./email/*"],
       "@guards/*": ["./src/guards/*"],
     },
     "incremental": true,
