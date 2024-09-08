@@ -1,66 +1,78 @@
-import { PrismaService } from "@db/prisma.service";
 import { Injectable } from "@nestjs/common";
-import { WorkspacesLoader } from "./services/loader";
-import { WorkspacesWriter } from "./services/writer";
 import { WorkspacesFollowingService } from "./following/following.service";
 import { Workspace } from "@prisma/client";
-import { WorkspacesAcl } from "./services/acl";
+import { WorkspacesModel } from "./workspaces.model";
+import { CreateWorkspaceDto } from "./dto/create.workspace.dto";
+import { UpdateWorkspaceDto } from "./dto/update.workspace.dto";
+import { OBJ } from "@shared/object";
 
 @Injectable()
 export class WorkspacesService {
     constructor(
-        private _prisma: PrismaService,
+        private _workspacesModel: WorkspacesModel,
         private _fs: WorkspacesFollowingService
     ) {}
-
-    /**
-     * @desc return workspace loader
-     * @returns {WorkspacesLoader}
-     */
-    loader() {
-        return new WorkspacesLoader(this._prisma);
-    }
-
-    /**
-     * @desc return workspace writer
-     * @returns {WorkspacesWriter}
-     */
-    writer() {
-        return new WorkspacesWriter(this._prisma);
-    }
-
-    /**
-     * @desc return workspace acl
-     * @param workspace
-     * @returns {WorkspacesAcl}
-     */
-    acl(workspace: Workspace) {
-        return new WorkspacesAcl(workspace);
-    }
-
-    /**
-     * @desc return workspace following service
-     * @returns {WorkspacesFollowingService}
-     */
-    fs() {
-        return this._fs;
-    }
 
     /**
      * @desc export workspace
      */
     export(workspace: Workspace) {
-        return { id: workspace.id, name: workspace.name };
+        return OBJ.pick(workspace, ["id", "name"]);
     }
 
     /**
-     * @desc delete a workspace
-     * @param {Workspace} workspace
-     * @returns
+     * @desc get workspace by id
+     * @param id
+     * @returns {Workspace}
+     */
+    getById(id: string) {
+        return this._workspacesModel.getById(id);
+    }
+
+    /**
+     * @desc get all workspaces
+     * @return {Workspace[]}
+     */
+    getAll() {
+        return this._workspacesModel.getAll();
+    }
+
+    /**
+     * @desc create workspace
+     * @return {Workspace}
+     */
+    async create(workspaceDto: CreateWorkspaceDto) {
+        const workspace = await this._workspacesModel.create(workspaceDto);
+
+        // Create workspace following
+        await this._fs.init(workspace);
+
+        return workspace;
+    }
+
+    /**
+     * @desc update workspace
+     * @return {Workspace}
+     */
+    async update(id: string, updateWorkspaceDto: UpdateWorkspaceDto) {
+        const workspace = await this._workspacesModel.update(
+            id,
+            updateWorkspaceDto
+        );
+
+        await this._fs.update(workspace);
+
+        return workspace;
+    }
+
+    /**
+     * @desc
      */
     async delete(workspace: Workspace) {
-        return await this._prisma.workspace.delete({
-            where: { id: workspace.id },
-        });
+        // Delete workspace
+        await this._workspacesModel.delete(workspace.id);
+
+        // Remove following
+        await this._fs.remove(workspace);
     }
 }

@@ -30,16 +30,16 @@ export class EmailService {
         return process.env.SMTP_HOST;
     };
 
-    private generateEmail = (template) => {
-        return render(template);
+    private async generateEmail(template){
+        return await render(template);
     };
 
-    sendEmail = async (options: EmailProps) => {
+    async sendEmail(options: EmailProps) {
         if (!this.isEnable()) {
             return;
         }
 
-        const html = this.generateEmail(options.template);
+        const html = await this.generateEmail(options.template);
 
         const emailDefaults = {
             from: process.env.SMTP_FROM,
@@ -48,9 +48,9 @@ export class EmailService {
         await this._transporter.sendMail({
             ...emailDefaults,
             ...options,
-            html
+            html,
         });
-    };
+    }
 
     async sendPasswordResetEmail(to: string, token: string) {
         const resetLink = `${process.env.FRONT_END_URL}/reset-password?token=${token}`;

@@ -93,7 +93,6 @@ model Invitation {
   id String @id @default(cuid())
 
   workspaceId     String
-  workspaceExport Json?
   role            WorkspaceRole @default(Member)
   email           String
   inviteAccepted  Boolean?      @default(false)
