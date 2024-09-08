@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Invitation, Workspace } from "@prisma/client";
 import { EmailService } from "@providers/email/mail.service";
-import workspaceInvitation from "emails/workspaceInvitation";
+import workspaceInvitation from "@providers/email/tpls/workspaceInvitation";
 import { InvitationsModel } from "./invitations.model";
 import { CreateInvitationData } from "./types";
 import { Token } from "@shared/token";

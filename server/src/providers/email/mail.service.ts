@@ -4,9 +4,11 @@ import { Injectable } from "@nestjs/common";
 import { render } from "@react-email/components";
 
 type EmailProps = {
+    from?: string;
     to: string;
     subject: string;
-    template: string;
+    template?: string;
+    html?:string;
     text?: string;
 };
 
@@ -26,20 +28,43 @@ export class EmailService {
         });
     }
 
+    /**
+     * @desc check if email is enabled
+     * @returns 
+     */
     isEnable = () => {
         return process.env.SMTP_HOST;
     };
 
-    private async generateEmail(template){
-        return await render(template);
-    };
 
+    /**
+     * @desc generate email from template
+     * @param template 
+     * @returns 
+     */
+    private async generateEmail(template) {
+        return await render(template);
+    }
+
+
+    /**
+     * @desc send email
+     * @param {EmailProps} options
+     * @returns 
+     */
     async sendEmail(options: EmailProps) {
         if (!this.isEnable()) {
             return;
         }
 
-        const html = await this.generateEmail(options.template);
+        let html = "";
+        if(options.template){
+            html = await this.generateEmail(options.template);
+        }
+        if(options.html){
+            html = options.html;
+        }
+        
 
         const emailDefaults = {
             from: process.env.SMTP_FROM,
@@ -50,18 +75,5 @@ export class EmailService {
             ...options,
             html,
         });
-    }
-
-    async sendPasswordResetEmail(to: string, token: string) {
-        const resetLink = `${process.env.FRONT_END_URL}/reset-password?token=${token}`;
-
-        const mailOptions = {
-            from: "Auth-backend service",
-            to: to,
-            subject: "Password Reset Request",
-            html: `<p>You requested a password reset. Click the link below to reset your password:</p><p><a href="${resetLink}">Reset Password</a></p>`,
-        };
-
-        await this._transporter.sendMail(mailOptions);
     }
 }

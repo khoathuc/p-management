@@ -170,7 +170,7 @@ export class AuthService {
         });
 
         // Send password reset email.
-        await this.emailService.sendPasswordResetEmail(email, resetToken);
+        await this.sendPasswordResetEmail(email, resetToken);
     }
 
     /**
@@ -205,5 +205,19 @@ export class AuthService {
 
         // Update password
         return await this.usersService.updatePassword(user, newPassword);
+    }
+
+    /**
+     * @desc send password reset email
+     */
+    async sendPasswordResetEmail(email: string, token: string) {
+        const resetLink = `${process.env.FRONT_END_URL}/reset-password?token=${token}`;
+
+        await this.emailService.sendEmail({
+            from: "Auth-backend service",
+            to: email,
+            subject: "Password Reset Request",
+            html: `<p>You requested a password reset. Click the link below to reset your password:</p><p><a href="${resetLink}">Reset Password</a></p>`,
+        });
     }
 }
