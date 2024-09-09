@@ -35,13 +35,21 @@ model User {
   accounts           Account[]
   title              String?
   location           String?
-  
+
   //data
-  data               Json?
+  data Json?
 
   // timestamps
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  Board       Board?     @relation(fields: [boardId], references: [id])
+  boardId     String?
+  Card        Card?      @relation(fields: [cardId], references: [id])
+  cardId      String?
+  Checklist   Checklist? @relation(fields: [checklistId], references: [id])
+  checklistId String?
+  Comment     Comment?   @relation(fields: [commentId], references: [id])
+  commentId   String?
 }
 
 model Workspace {
@@ -77,9 +85,9 @@ model WorkspaceFollowing {
   ownering Boolean
   isAdmin  Boolean
   isMember Boolean
-  
+
   //data
-  data     Json?
+  data Json?
 
   // timestamps
   createdAt DateTime @default(now())
@@ -163,4 +171,55 @@ model ForgotPasswordToken {
   // timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Board {
+  id          String @id @default(cuid())
+  name        String
+  user        User[]
+  list        List[]
+  description String
+  background  String
+}
+
+model List {
+  id      String  @id @default(cuid())
+  name    String
+  card    Card[]
+  Board   Board?  @relation(fields: [boardId], references: [id])
+  boardId String?
+}
+
+model Card {
+  id           String      @id @default(cuid())
+  name         String
+  notification Boolean
+  description  String
+  comments     Comment[]
+  user         User[]
+  labels       String
+  checklist    Checklist[]
+  date         DateTime
+  attchment    String
+  cover        String
+  List         List?       @relation(fields: [listId], references: [id])
+  listId       String?
+}
+
+model Checklist {
+  id         String  @id @default(cuid())
+  name       String
+  percentage Int
+  user       User[]
+  Card       Card?   @relation(fields: [cardId], references: [id])
+  cardId     String?
+}
+
+model Comment {
+  id          String   @id
+  description String
+  time        DateTime
+  user        User[]
+  Card        Card?    @relation(fields: [cardId], references: [id])
+  cardId      String?
 }
