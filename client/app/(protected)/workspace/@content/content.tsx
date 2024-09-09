@@ -13,14 +13,16 @@ const Content: React.FC = () => {
     const setCurrentState = useSidebarState((store) => store.setCurrentState);
 
     const onClose = () => {
-        setCurrentState(null);
+        setTimeout(() => {
+            setCurrentState(null);
+        }, 210);
     };
     return (
         <div className="content">
             <h1>{currentState}</h1>
             {currentState === 'Search' && <SearchCommand />}
             {currentState === 'Inbox' && (
-                <Sheet defaultOpen={true} onOpenChange={onClose}>
+                <Sheet defaultOpen={true} onOpenChange={onClose} >
                     <div
                         role="button"
                         style={{
