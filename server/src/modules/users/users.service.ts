@@ -4,29 +4,24 @@ import { RegisterDto } from "@modules/auth/dto/register.dto";
 import { Injectable } from "@nestjs/common";
 import { User, UserStatus } from "@prisma/client";
 import { Crypt } from "@shared/crypt";
+import { UsersModel } from "./users.model";
 
 @Injectable()
 export class UsersService {
-    constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService, private _userModel: UsersModel) {}
 
     /**
      * @desc release user payload
      */
     releasePayload(user: User): AuthPayload {
-        return {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            username: user.username,
-            email: user.email,
-        };
+        return this._userModel.releasePayload(user);
     }
     /**
      * @desc get all users
      * @returns
      */
     async getAll(): Promise<User[]> {
-        return await this.prisma.user.findMany();
+        return await this._userModel.getAll();
     }
 
     /**
@@ -36,10 +31,7 @@ export class UsersService {
      * @returns {Promise<User>}
      */
     async uploadAvatar(user: User, avatarUrl: string): Promise<User> {
-        return this.prisma.user.update({
-            where: { id: user.id },
-            data: { avatar: avatarUrl },
-        });
+        return await this._userModel.uploadAvatar(user.id, avatarUrl)
     }
 
     /**
@@ -48,9 +40,7 @@ export class UsersService {
      * @returns
      */
     async getById(id: string): Promise<User> {
-        return await this.prisma.user.findUnique({
-            where: { id },
-        });
+        return await this._userModel.getById(id);
     }
 
     /**
@@ -59,9 +49,7 @@ export class UsersService {
      * @returns
      */
     async getByEmail(email: string): Promise<User> {
-        return await this.prisma.user.findUnique({
-            where: { email },
-        });
+        return await this._userModel.getByEmail(email);
     }
 
     /**
@@ -69,7 +57,7 @@ export class UsersService {
      * @return {User[]}
      */
     async getByIds(ids: string[]): Promise<User[]> {
-        return await this.prisma.user.findMany({ where: { id: { in: ids } } });
+        return await this._userModel.getByIds(ids);
     }
 
     /**
@@ -77,42 +65,26 @@ export class UsersService {
      * @returns
      */
     async getByEmailOrUsername({ email, username }): Promise<User> {
-        return await this.prisma.user.findFirst({
-            where: {
-                OR: [{ email }, { username }],
-            },
-        });
+        return await this._userModel.getByEmailOrUsername({email, username});
     }
 
     /**
      * @desc create new user
-     */
+     * @param {RegisterDto} data
+     * @returns
+    */
     async create(data: RegisterDto): Promise<User> {
-        const hashedPassword = await Crypt.hash(data.password, 10);
-
-        return await this.prisma.user.create({
-            data: {
-                email: data.email,
-                username: data.username,
-                password: hashedPassword,
-                status: UserStatus.Active,
-                emailVerified: false,
-            },
-        });
+        return await this._userModel.create(data);
     }
 
     /**
      * @desc user update password
+     * @param {User} user
+     * @param {string} newPassword
+     * @returns
      */
     async updatePassword(user: User, newPassword: string) {
-        await this.prisma.user.update({
-            where: {
-                id: user.id,
-            },
-            data: {
-                password: await Crypt.hash(newPassword, 10),
-            },
-        });
+        return await this._userModel.updatePassword(user.id, newPassword);
     }
 
     /**
@@ -121,10 +93,6 @@ export class UsersService {
      * @returns
      */
     async deleteById(id: string) {
-        return await this.prisma.user.delete({
-            where: {
-                id: id,
-            },
-        });
+        return await this._userModel.deleteById(id);
     }
 }
