@@ -17,8 +17,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import FormError from "../form-error";
 import FormSuccess from "../form-success";
-import { login } from "../../actions/login";
-import { register } from "../../actions/register";
+import { register } from "../../server/register";
 import { Spinner } from "../spinner";
 
 const RegisterForm = () => {
@@ -30,23 +29,31 @@ const RegisterForm = () => {
     defaultValues: {
       email: "",
       password: "",
-      name: "",
+      username: "",
     },
   });
 
   // ============================================================
   // NOTE: SERVER ACTIONS REQUEST SUBMIT FORM FOR REGISTER
   // ============================================================
+
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
-    // setError("");
-    // setSuccess("");
-    // startTransition(() => {
-    //   register(values).then((data) => {
-    //     setError(data.error);
-    //     setSuccess(data.success);
-    //   });
-    // });
+    console.log(values);
+    setError("");
+    setSuccess("");
+    startTransition(() => {
+      register(values).then((data) => {
+        setError(data.error);
+        setSuccess(data.success);
+
+        // Set an additional 3-second delay for the pending state
+        setTimeout(() => {
+          // After 3 seconds, the pending state will stop
+        }, 3000);
+      });
+    });
   };
+
   return (
     <CardWrapper
       headerLabel="Create an account"
@@ -59,7 +66,7 @@ const RegisterForm = () => {
           <div className="space-y-2 text-destructive mb-2">
             <FormField
               control={form.control}
-              name="name"
+              name="username"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="font-normal text-xs">

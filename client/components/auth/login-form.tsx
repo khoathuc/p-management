@@ -17,7 +17,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import FormError from "../form-error";
 import FormSuccess from "../form-success";
-import { login } from "../../actions/login";
+import { login } from "../../server/login";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { FaKey } from "react-icons/fa6";
@@ -60,25 +60,18 @@ const LoginForm = () => {
   // NOTE: SERVER ACTIONS REQUEST SUBMIT FORM
   // ============================================================
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    // setError("");
-    // setSuccess("");
-    // startTransition(() => {
-    //   login(values)
-    //     .then((data) => {
-    //       if (data?.error) {
-    //         form.reset();
-    //         setError(data.error);
-    //       }
-    //       if (data?.success) {
-    //         form.reset();
-    //         setError(data.success);
-    //       }
-    //       if (data?.twoFactor) {
-    //         setShowTwoFactor(true);
-    //       }
-    //     })
-    //     .catch(() => setError("Some thing went wrong!"));
-    // });
+    setError("");
+    setSuccess("");
+    startTransition(() => {
+      login(values)
+        .then((data) => {
+          if (data?.error) {
+            form.reset();
+            setError(data.error);
+          }
+        })
+        .catch(() => setError("Some thing went wrong!"));
+    });
   };
 
   return (

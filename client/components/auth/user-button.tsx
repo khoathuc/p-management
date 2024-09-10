@@ -33,6 +33,7 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 
 const UserButton = () => {
   const user = useCurrentUser();
+  console.log(user);
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
 

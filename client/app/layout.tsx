@@ -2,19 +2,16 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import favicon from "../public/notion.png";
-import { SessionProvider, useSession } from "next-auth/react";
-import { auth } from "@/auth";
+import { Toaster } from "sonner";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { ModalProvider } from "@/components/providers/modal-provider";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Notion - Bring your ideas to life.",
   description: "Bring your ideas to life",
-  icons: {
-    icon: "../public/notion.png", // Default icon
-    shortcut: "/notion-32x32.png", // Shortcut icon (optional)
-    apple: "/notion-apple-touch-icon.png", // Apple touch icon (optional)
-  },
 };
 
 export default async function RootLayout({
@@ -22,12 +19,21 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
   return (
-    <SessionProvider session={session}>
-      <html lang="en">
-        <body className={inter.className}>{children}</body>
-      </html>
-    </SessionProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={cn("bg-background dark:bg-[#1F1F1F]")}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+          storageKey="notion-theme-2"
+        >
+          <Toaster position="bottom-center" />
+          <ModalProvider />
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }
