@@ -17,6 +17,10 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import FormError from "../form-error";
 import FormSuccess from "../form-success";
+<<<<<<< HEAD
+=======
+import { login } from "../../actions/login";
+>>>>>>> 9ac3383ab1c8fc49fb6a99b949833bf8c88a22fb
 import { register } from "../../server/register";
 import { Spinner } from "../spinner";
 
