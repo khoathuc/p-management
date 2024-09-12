@@ -129,19 +129,4 @@ export class UsersModel {
             },
         });
     }
-
-    /**
-     * @desc release user payload
-     * @param {User} user
-     * @returns
-     */
-    releasePayload(user: User): AuthPayload {
-        return {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            username: user.username,
-            email: user.email,
-        };
-    }
 }
