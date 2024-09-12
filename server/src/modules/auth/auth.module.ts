@@ -9,10 +9,11 @@ import { GoogleStrategy } from "src/providers/google/google.strategy";
 import { SessionSerializer } from "src/providers/google/serializer";
 import { LocalStrategy } from "./strategies/local.strategy";
 import { JwtStrategy } from "./strategies/jwt.strategy";
+import { UsersModel } from "@modules/users/users.model";
 
 @Module({
     controllers: [AuthController],
-    providers: [AuthService, PrismaService, JwtService, GoogleStrategy, JwtStrategy, LocalStrategy, SessionSerializer, EmailService, UsersService]
+    providers: [AuthService, PrismaService, JwtService, GoogleStrategy, JwtStrategy, LocalStrategy, SessionSerializer, EmailService, UsersService, UsersModel]
 })
 
 export class AuthModule { };
