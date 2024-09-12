@@ -1,20 +1,25 @@
-import { PrismaService } from "@db/prisma.service";
 import { AuthPayload } from "@interfaces/auth.payload";
 import { RegisterDto } from "@modules/auth/dto/register.dto";
 import { Injectable } from "@nestjs/common";
 import { User, UserStatus } from "@prisma/client";
-import { Crypt } from "@shared/crypt";
 import { UsersModel } from "./users.model";
+import { OBJ } from "@shared/object";
 
 @Injectable()
 export class UsersService {
-    constructor(private prisma: PrismaService, private _userModel: UsersModel) {}
+    constructor(private _userModel: UsersModel) {}
 
     /**
      * @desc release user payload
      */
     releasePayload(user: User): AuthPayload {
-        return this._userModel.releasePayload(user);
+        return OBJ.pick(user, [
+            "id",
+            "firstName",
+            "lastName",
+            "username",
+            "email",
+        ]);
     }
     /**
      * @desc get all users
@@ -31,7 +36,7 @@ export class UsersService {
      * @returns {Promise<User>}
      */
     async uploadAvatar(user: User, avatarUrl: string): Promise<User> {
-        return await this._userModel.uploadAvatar(user.id, avatarUrl)
+        return await this._userModel.uploadAvatar(user.id, avatarUrl);
     }
 
     /**
@@ -65,14 +70,14 @@ export class UsersService {
      * @returns
      */
     async getByEmailOrUsername({ email, username }): Promise<User> {
-        return await this._userModel.getByEmailOrUsername({email, username});
+        return await this._userModel.getByEmailOrUsername({ email, username });
     }
 
     /**
      * @desc create new user
      * @param {RegisterDto} data
      * @returns
-    */
+     */
     async create(data: RegisterDto): Promise<User> {
         return await this._userModel.create(data);
     }
