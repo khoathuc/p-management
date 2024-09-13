@@ -1,51 +1,26 @@
 "use client";
 
-import { Dialog, DialogContent, DialogHeader } from "../ui/dialog";
 import { useSettings } from "../../hooks/use-settings";
+import { Dialog, DialogContent } from "../ui/dialog";
 
-import { Label } from "../ui/label";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
-import { Avatar, AvatarImage } from "../ui/avatar";
+import { Avatar } from "../ui/avatar";
 
 import {
   Bell,
-  Building,
-  ChevronsLeft,
-  CircleArrowUp,
   CircleUserRound,
-  Combine,
-  Dock,
-  Download,
+  Cog,
   Globe,
-  Home,
-  KeyRound,
-  Search,
-  Settings,
-  ShieldCheck,
   SlidersHorizontal,
-  SquareArrowUpRight,
-  Users,
+  SquareArrowUpRight
 } from "lucide-react";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { SettingItem } from "../settings/_components/setting-items";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import AccountSecurity from "../settings/_components/account-security";
-import MyAccountSupport from "../settings/_components/my-account-support";
-import MyProfile from "../settings/_components/my-profile";
+import LanguageAndRegionTab from "../settings/language-and-region-tab";
 import MyAccountTab from "../settings/my-account-tab";
 import MySettingsTab from "../settings/my-settings-tab";
-import MyNotifications from "../settings/my-notifications-tab";
-import MyNotificationsTab from "../settings/my-notifications-tab";
-import MyConnectionsTab from "../settings/my-connections-tab";
-import LanguageAndRegionTab from "../settings/language-and-region-tab";
-import React from "react";
+import MyWorkspaces from "../settings/my-workspaces";
+import ThisWorkspace from "../settings/this-workspace";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 export const SettingsModal = () => {
   const settings = useSettings();
@@ -87,7 +62,7 @@ export const SettingsModal = () => {
               <SettingItem
                 label="My settings"
                 icon={SlidersHorizontal}
-                // onClick={settings.onOpen}
+              // onClick={settings.onOpen}
               />
             </TabsTrigger>
 
@@ -95,7 +70,7 @@ export const SettingsModal = () => {
               <SettingItem
                 label="My notifications"
                 icon={Bell}
-                // onClick={settings.onOpen}
+              // onClick={settings.onOpen}
               />
             </TabsTrigger>
 
@@ -103,7 +78,7 @@ export const SettingsModal = () => {
               <SettingItem
                 label="My Connections"
                 icon={SquareArrowUpRight}
-                // onClick={settings.onOpen}
+              // onClick={settings.onOpen}
               />
             </TabsTrigger>
 
@@ -111,7 +86,23 @@ export const SettingsModal = () => {
               <SettingItem
                 label="Language & region"
                 icon={Globe}
-                // onClick={settings.onOpen}
+              // onClick={settings.onOpen}
+              />
+            </TabsTrigger>
+
+            <TabsTrigger value="this-workspace">
+              <SettingItem
+                label="This Workspace"
+                icon={Cog}
+              // onClick={settings.onOpen}
+              />
+            </TabsTrigger>
+
+            <TabsTrigger value="my-workspaces">
+              <SettingItem
+                label="My Workspaces"
+                icon={Cog}
+              // onClick={settings.onOpen}
               />
             </TabsTrigger>
 
@@ -183,6 +174,12 @@ export const SettingsModal = () => {
             </TabsContent> */}
             <TabsContent value="language-and-region">
               <LanguageAndRegionTab />
+            </TabsContent>
+            <TabsContent value="this-workspace">
+              <ThisWorkspace />
+            </TabsContent>
+            <TabsContent value="my-workspaces">
+              <MyWorkspaces />
             </TabsContent>
           </div>
         </Tabs>
