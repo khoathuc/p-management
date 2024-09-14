@@ -6,34 +6,37 @@ import { configSwagger } from "@common/swagger/swagger.config";
 import { TransformInterceptor } from "@interceptors/response.interceptors";
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule);
 
-    //swagger config
-    configSwagger(app);
+  //swagger config
+  configSwagger(app);
 
-    //global interceptors
-    app.useGlobalInterceptors(new TransformInterceptor(app.get(Reflector)));
+  //global interceptors
+  app.useGlobalInterceptors(new TransformInterceptor(app.get(Reflector)));
 
-    // app.use(
-    //     session({
-    //         secret: process.env.SECRET_SESSION,
-    //         saveUninitialized: false, 
-    //         resave: false,
-    //         cookie: {
-    //             maxAge: 60*60*1000*24*365,
-    //         }
-    //     })
-    // );
-    // app.use(passport.initialize()); // Initializes Passport for authentication
-    // app.use(passport.session()); // Middleware that enables persistent login sessions
+  // Enable CORS for all origins
+  app.enableCors();
 
-    await app.listen(process.env.PORT);
+  // app.use(
+  //     session({
+  //         secret: process.env.SECRET_SESSION,
+  //         saveUninitialized: false,
+  //         resave: false,
+  //         cookie: {
+  //             maxAge: 60*60*1000*24*365,
+  //         }
+  //     })
+  // );
+  // app.use(passport.initialize()); // Initializes Passport for authentication
+  // app.use(passport.session()); // Middleware that enables persistent login sessions
 
-    //hot reload configs
-    if (module.hot) {
-        module.hot.accept();
-        module.hot.dispose(() => app.close());
-    }
+  await app.listen(process.env.PORT);
+
+  //hot reload configs
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
 }
 
 bootstrap();
