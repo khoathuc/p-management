@@ -5,11 +5,21 @@ import {
     CommandItem,
     CommandList
 } from "@/components/ui/command";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { PopoverTrigger } from "@radix-ui/react-popover";
-import { CheckIcon, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { CheckIcon, ChevronDown, Link } from "lucide-react";
+import { ChangeEvent, FormEvent, useState } from "react";
+import { toast } from "sonner";
 import {
     Table,
     TableBody,
@@ -70,6 +80,24 @@ const WorkspaceAccess = () => {
         setUsers(updatedUsers);
         setIsChange(!isChange); // Toggle the state to force re-render
         setOpenPopover(null); // Close the Popover after selection
+    };
+
+    const [inputValue, setInputValue] = useState('');
+    const [error, setError] = useState('');
+
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setInputValue(e.target.value);
+        setError(''); // Xóa lỗi khi người dùng bắt đầu nhập
+    };
+
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!inputValue) {
+            setError('Email or Username not valid');
+        } else {
+            // Xử lý logic gửi lời mời ở đây
+            console.log('Invitation sent to:', inputValue);
+        }
     };
 
     return (
@@ -143,6 +171,54 @@ const WorkspaceAccess = () => {
                         ))}
                     </TableBody>
                 </Table>
+                <div className="flex justify-end">
+
+                    <Dialog onOpenChange={() => setError('')}>
+                        <DialogTrigger asChild>
+                            <Button
+                                variant={'outline'}
+                                className="bg-blue-700 text-white w-40 text-base hover:bg-blue-900 hover:text-white">
+                                Invite new user
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Invite users</DialogTitle>
+                                <DialogDescription>
+                                    Invite users to this workspace
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div>
+                                <form onSubmit={handleSubmit} className="flex items-center space-x-2">
+                                    <Input
+                                        type="text"
+                                        placeholder="Email or Username"
+                                        value={inputValue}
+                                        onChange={handleInputChange}
+                                        className="input-class"
+                                    />
+                                    <Button type="submit" className="button-class">
+                                        Invite
+                                    </Button>
+                                </form>
+                                {error && <div className="text-red-500 mt-2 mx-1 text-sm">{error}</div>}
+                            </div>
+                            <div className="flex items-center mx-1">
+                                <span className="text-center text-[#737373]">Invite user by link:</span>
+                                <span className="mx-4">
+                                    <Button variant={'secondary'} onClick={() => {
+                                        navigator.clipboard.writeText("https://example.com/invite");
+                                        toast.success('Copied!')
+                                    }}>
+                                        <Link className="size-4 mr-2" />
+                                        Copy URL
+                                    </Button>
+                                </span>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+
+                </div>
             </div>
         </div>
     );
